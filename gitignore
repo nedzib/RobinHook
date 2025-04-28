@@ -1,0 +1,47 @@
+# General
+*.log
+*.tmp
+*.pid
+*.swp
+*.swo
+*.DS_Store
+
+# Rails
+/log/*
+/tmp/*
+/vendor/bundle
+/storage/*
+/public/assets
+/public/packs
+/public/packs-test
+/node_modules
+.byebug_history
+
+# Credentials and keys
+/config/master.key
+/config/credentials/*.key
+.env
+.env.*  
+
+# Yarn / NPM
+yarn-error.log
+node_modules/
+
+# Bundler
+.bundle/
+/vendor/cache
+
+# Docker
+*.env
+
+# Editor configs
+/.idea/
+/.vscode/
+/*.code-workspace
+
+# Bootsnap cache
+/tmp/cache/bootsnap-*
+
+# Redis dump
+dump.rdb
+
