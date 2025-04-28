@@ -1,0 +1,11 @@
+// Cerrar el modal si está abierto
+document.querySelectorAll('.sampling-modal').forEach(function(modal) {
+  modal.classList.add('hidden');
+});
+
+// Mostrar mensaje de notificación
+<% if flash[:notice] %>
+  alert("<%= flash[:notice] %>");
+<% elsif flash[:alert] %>
+  alert("<%= flash[:alert] %>");
+<% end %>

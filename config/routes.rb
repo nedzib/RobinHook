@@ -4,7 +4,9 @@ Rails.application.routes.draw do
   
   resources :rounds, controller: 'round' do
     resources :participants, only: [:create, :destroy, :update]
-    resources :subgroups, only: [:create, :destroy]
+    resources :subgroups, only: [:create, :destroy] do
+      resources :samplings, only: [:create]
+    end
   end
   devise_for :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
