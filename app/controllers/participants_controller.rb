@@ -1,4 +1,5 @@
 class ParticipantsController < ApplicationController
+  skip_before_action :authenticate_user!, only: [:update]
   before_action :set_round
   before_action :set_participant, only: [:update, :destroy]
   
@@ -13,28 +14,38 @@ class ParticipantsController < ApplicationController
   end
   
   def update
+    # Determinar si la solicitud viene de la vista pública
+    is_public_view = params[:public_view] == "true"
+    
+    # Determinar la URL de redirección
+    redirect_url = if is_public_view
+      rounds_public_path(hash_id: @round.hash_id)
+    else
+      round_path(@round)
+    end
+    
     if params[:increment].present?
       @participant.increment!(:count)
-      redirect_to round_path(@round), notice: 'Contador incrementado.'
+      redirect_to redirect_url, notice: 'Contador incrementado.'
     elsif params[:decrement].present? && @participant.count > 0
       @participant.decrement!(:count)
-      redirect_to round_path(@round), notice: 'Contador decrementado.'
+      redirect_to redirect_url, notice: 'Contador decrementado.'
     elsif params[:subgroup_id].present?
       # Mover a un subgrupo
       if params[:subgroup_id] == "0"
         @participant.update(subgroup_id: nil, round_id: @round.id)
-        redirect_to round_path(@round), notice: 'Participante movido a la ronda principal.'
+        redirect_to redirect_url, notice: 'Participante movido a la ronda principal.'
       else
         subgroup = @round.subgroups.find_by(id: params[:subgroup_id])
         if subgroup
           @participant.update(subgroup_id: subgroup.id, round_id: nil)
-          redirect_to round_path(@round), notice: 'Participante movido al subgrupo.'
+          redirect_to redirect_url, notice: 'Participante movido al subgrupo.'
         else
-          redirect_to round_path(@round), alert: 'Subgrupo no encontrado.'
+          redirect_to redirect_url, alert: 'Subgrupo no encontrado.'
         end
       end
     else
-      redirect_to round_path(@round)
+      redirect_to redirect_url
     end
   end
   
