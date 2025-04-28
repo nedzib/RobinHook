@@ -1,4 +1,12 @@
 Rails.application.routes.draw do
+  # Ruta pública para acceder a rounds por hash_id
+  get 'rounds/public', to: 'round#public_show'
+  
+  resources :rounds, controller: 'round' do
+    resources :participants, only: [:create, :destroy, :update]
+    resources :subgroups, only: [:create, :destroy]
+  end
+  devise_for :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -11,4 +19,5 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+  root "round#index"
 end

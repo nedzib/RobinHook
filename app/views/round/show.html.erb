@@ -1,0 +1,242 @@
+<div class="container mx-auto p-4 min-h-screen flex flex-col justify-center">
+  <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+    <div class="mb-6">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-2xl font-semibold"><%= @round.name %> - <%= @round.hash_id %></h2>
+        <% unless @public_view %>
+        <div class="space-x-2">
+          <%= link_to "Editar", edit_round_path(@round), class: "px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50" %>
+          <%= link_to "Volver", rounds_path, class: "px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50" %>
+        </div>
+        <% end %>
+      </div>
+      
+      <div class="grid grid-cols-1 gap-6">
+        <div>
+          <div class="space-y-2">
+            <% if @round.web_hook.present? && !@public_view %>
+            <p>
+              <span class="font-medium">Webhook URL:</span> 
+              <span class="text-gray-600 break-all"><%= @round.web_hook %></span>
+            </p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Sección de subgrupos -->
+    <div class="border-t border-gray-200 pt-6 mb-8">
+      <div class="flex justify-between items-center mb-4">
+        <% unless @public_view %>
+        <h3 class="text-xl font-semibold">Subgrupos</h3>
+        <button id="showAddSubgroupForm" class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50">
+          Agregar subgrupo
+        </button>
+        <% end %>
+      </div>
+      
+      <% unless @public_view %>
+      <!-- Formulario para agregar subgrupo (inicialmente oculto) -->
+      <div id="addSubgroupForm" class="bg-gray-50 p-4 rounded-md mb-6 hidden">
+        <h4 class="text-lg font-medium mb-3">Agregar nuevo subgrupo</h4>
+        <form action="<%= round_subgroups_path(@round) %>" method="post" class="space-y-4">
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+          <div class="flex items-center space-x-4">
+            <div class="flex-grow">
+              <label for="subgroup_name" class="sr-only">Nombre</label>
+              <input type="text" name="subgroup[name]" id="subgroup_name" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" placeholder="Nombre del subgrupo" required>
+            </div>
+            <div class="flex space-x-2">
+              <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">Guardar</button>
+              <button type="button" id="cancelAddSubgroup" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">Cancelar</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <% end %>
+      
+      <!-- Listado de subgrupos -->
+      <% if @round.subgroups.any? %>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <% @round.subgroups.each do |subgroup| %>
+          <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+            <div class="flex justify-between items-center mb-2">
+              <h4 class="font-medium text-lg"><%= subgroup.name %></h4>
+              <% unless @public_view %>
+              <%= button_to round_subgroup_path(@round, subgroup), method: :delete, data: { turbo_confirm: "¿Estás seguro de que deseas eliminar este subgrupo?" }, class: "text-red-600 hover:text-red-900 bg-transparent border-0 cursor-pointer" do %>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+              <% end %>
+              <% end %>
+            </div>
+            
+            <% participants = Participant.where(subgroup_id: subgroup.id) %>
+            <% if participants.any? %>
+              <ul class="divide-y divide-gray-200">
+                <% participants.each do |participant| %>
+                  <li class="py-2 flex justify-between items-center">
+                    <div>
+                      <span class="text-gray-900"><%= participant.name %></span>
+                      <span class="ml-2 px-2 py-1 bg-gray-100 rounded-md text-xs font-medium"><%= participant.count %></span>
+                    </div>
+                    <% unless @public_view %>
+                    <div class="flex items-center space-x-2">
+                      <form action="<%= round_participant_path(@round, participant) %>" method="post" class="inline">
+                        <input type="hidden" name="_method" value="patch">
+                        <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+                        <input type="hidden" name="subgroup_id" value="0">
+                        <button type="submit" class="text-blue-600 hover:text-blue-900 bg-transparent border-0 cursor-pointer text-xs">
+                          Mover a principal
+                        </button>
+                      </form>
+                    </div>
+                    <% end %>
+                  </li>
+                <% end %>
+              </ul>
+            <% else %>
+              <p class="text-gray-500 text-sm">No hay participantes en este subgrupo.</p>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+      <% else %>
+      <p class="text-gray-500">No hay subgrupos disponibles.</p>
+      <% end %>
+    </div>
+    
+    <div class="border-t border-gray-200 pt-6">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-semibold">Participantes</h3>
+        <% unless @public_view %>
+        <button id="showAddParticipantForm" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
+          Agregar participante
+        </button>
+        <% end %>
+      </div>
+      
+      <% unless @public_view %>
+      <!-- Formulario para agregar participante (inicialmente oculto) -->
+      <div id="addParticipantForm" class="bg-gray-50 p-4 rounded-md mb-6 hidden">
+        <h4 class="text-lg font-medium mb-3">Agregar nuevo participante</h4>
+        <%= form_with(model: [@round, Participant.new], local: true, class: "space-y-4") do |f| %>
+          <div class="flex items-center space-x-4">
+            <div class="flex-grow">
+              <%= f.label :name, "Nombre", class: "sr-only" %>
+              <%= f.text_field :name, class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50", placeholder: "Nombre del participante" %>
+            </div>
+            <div class="flex space-x-2">
+              <%= f.submit "Guardar", class: "px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50" %>
+              <button type="button" id="cancelAddParticipant" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">Cancelar</button>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      <% end %>
+      
+      <% if @round.participants.any? %>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Conteo</th>
+                <% unless @public_view %>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                <% end %>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <% @round.participants.each do |participant| %>
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><%= participant.name %></td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <span class="px-3 py-1 bg-gray-100 rounded-md font-medium"><%= participant.count %></span>
+                  </td>
+                  <% unless @public_view %>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <div class="flex items-center space-x-2">
+                      <% if @round.subgroups.any? %>
+                        <div class="inline-block">
+                          <select id="subgroupSelect<%= participant.id %>" class="rounded-md border border-gray-300 shadow-sm px-3 py-1 bg-white text-sm font-medium text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500" onchange="moveToSubgroup(this, <%= participant.id %>, <%= @round.id %>)">
+                            <option value="">Mover a grupo</option>
+                            <% @round.subgroups.each do |subgroup| %>
+                              <option value="<%= subgroup.id %>"><%= subgroup.name %></option>
+                            <% end %>
+                          </select>
+                          
+                          <form id="moveForm<%= participant.id %>" action="<%= round_participant_path(@round, participant) %>" method="post" style="display: none;">
+                            <input type="hidden" name="_method" value="patch">
+                            <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+                            <input type="hidden" id="subgroup_id<%= participant.id %>" name="subgroup_id" value="">
+                          </form>
+                        </div>
+                      <% end %>
+                      <%= button_to "Eliminar", round_participant_path(@round, participant), method: :delete, data: { turbo_confirm: "¿Estás seguro de que deseas eliminar este participante?" }, class: "text-red-600 hover:text-red-900 bg-transparent border-0 cursor-pointer" %>
+                    </div>
+                  </td>
+                  <% end %>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <p class="text-gray-500">No hay participantes en esta ronda.</p>
+      <% end %>
+    </div>
+    
+    <% unless @public_view %>
+    <script>
+      // Función para mover un participante a un subgrupo
+      function moveToSubgroup(selectElement, participantId, roundId) {
+        const subgroupId = selectElement.value;
+        if (subgroupId) {
+          // Establecer el valor del subgrupo seleccionado en el formulario
+          document.getElementById('subgroup_id' + participantId).value = subgroupId;
+          // Enviar el formulario
+          document.getElementById('moveForm' + participantId).submit();
+        }
+      }
+      
+      document.addEventListener('DOMContentLoaded', function() {
+        // Formulario de participantes
+        const showFormButton = document.getElementById('showAddParticipantForm');
+        const cancelButton = document.getElementById('cancelAddParticipant');
+        const form = document.getElementById('addParticipantForm');
+        
+        if (showFormButton && cancelButton && form) {
+          showFormButton.addEventListener('click', function() {
+            form.classList.remove('hidden');
+            showFormButton.classList.add('hidden');
+          });
+          
+          cancelButton.addEventListener('click', function() {
+            form.classList.add('hidden');
+            showFormButton.classList.remove('hidden');
+          });
+        }
+        
+        // Formulario de subgrupos
+        const showSubgroupFormButton = document.getElementById('showAddSubgroupForm');
+        const cancelSubgroupButton = document.getElementById('cancelAddSubgroup');
+        const subgroupForm = document.getElementById('addSubgroupForm');
+        
+        if (showSubgroupFormButton && cancelSubgroupButton && subgroupForm) {
+          showSubgroupFormButton.addEventListener('click', function() {
+            subgroupForm.classList.remove('hidden');
+            showSubgroupFormButton.classList.add('hidden');
+          });
+          
+          cancelSubgroupButton.addEventListener('click', function() {
+            subgroupForm.classList.add('hidden');
+            showSubgroupFormButton.classList.remove('hidden');
+          });
+        }
+      });
+    </script>
+    <% end %>
+  </div>
+</div>

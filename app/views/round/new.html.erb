@@ -1,0 +1,35 @@
+<div class="container mx-auto p-4">
+  <h1 class="font-bold text-4xl mb-6">Crear Nueva Ronda</h1>
+
+  <!-- Formulario para crear ronda -->
+  <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+    <%= form_with(model: @round, local: true, class: "space-y-4") do |f| %>
+      <% if @round.errors.any? %>
+        <div class="bg-red-50 p-4 rounded-md mb-4">
+          <h2 class="text-red-800 font-medium"><%= pluralize(@round.errors.count, "error") %> impidieron guardar esta ronda:</h2>
+          <ul class="list-disc pl-5 mt-2">
+            <% @round.errors.full_messages.each do |message| %>
+              <li class="text-red-700"><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+      
+      <div>
+        <%= f.label :name, "Nombre", class: "block text-sm font-medium text-gray-700" %>
+        <%= f.text_field :name, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" %>
+      </div>
+      
+      <div>
+        <%= f.label :web_hook, "URL de Webhook", class: "block text-sm font-medium text-gray-700" %>
+        <%= f.url_field :web_hook, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50", placeholder: "https://ejemplo.com/webhook" %>
+        <p class="mt-1 text-xs text-gray-500">URL que recibirá notificaciones cuando haya cambios en esta ronda.</p>
+      </div>
+      
+      <div class="mt-6 flex items-center justify-between">
+        <%= f.submit "Crear Ronda", class: "px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50" %>
+        <%= link_to "Cancelar", rounds_path, class: "px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50" %>
+      </div>
+    <% end %>
+  </div>
+</div>
