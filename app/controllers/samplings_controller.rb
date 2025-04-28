@@ -1,4 +1,5 @@
 class SamplingsController < ApplicationController
+  skip_before_action :authenticate_user!, only: [:create]
   before_action :set_subgroup
   
   def create

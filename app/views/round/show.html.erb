@@ -78,9 +78,8 @@
           <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
             <div class="flex justify-between items-center mb-2">
               <h4 class="font-medium text-lg"><%= subgroup.name %></h4>
-              <% unless @public_view %>
               <div class="flex space-x-2">
-                <!-- Botón para abrir el modal de muestreo -->
+                <!-- Botón para abrir el modal de muestreo (disponible en vista pública) -->
                 <button type="button" onclick="openSamplingModal(<%= subgroup.id %>)" class="text-blue-600 hover:text-blue-900 bg-transparent border-0 cursor-pointer">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
@@ -88,14 +87,15 @@
                   </svg>
                 </button>
                 
-                <!-- Botón para eliminar el equipo -->
+                <% unless @public_view %>
+                <!-- Botón para eliminar el equipo (solo en vista privada) -->
                 <%= button_to round_subgroup_path(@round, subgroup), method: :delete, data: { turbo_confirm: "¿Estás seguro de que deseas eliminar este equipo?" }, class: "text-red-600 hover:text-red-900 bg-transparent border-0 cursor-pointer" do %>
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
                   </svg>
                 <% end %>
+                <% end %>
               </div>
-              <% end %>
             </div>
             
             <% participants = Participant.where(subgroup_id: subgroup.id) %>
@@ -293,7 +293,6 @@
   </div>
   
   <!-- Modales para muestreo round robin -->
-  <% unless @public_view %>
   <% @round.subgroups.each do |subgroup| %>
   <div id="samplingModal<%= subgroup.id %>" class="sampling-modal hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
     <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
@@ -321,7 +320,6 @@
       </div>
     </div>
   </div>
-  <% end %>
   <% end %>
   
   <!-- JavaScript para manejar los modales -->
