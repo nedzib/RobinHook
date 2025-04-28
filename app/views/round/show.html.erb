@@ -33,12 +33,12 @@
     <div class="border-t border-gray-200 pt-6 mb-8">
       <div class="flex justify-between items-center mb-4">
         <% unless @public_view %>
-        <h3 class="text-xl font-semibold">Subgrupos</h3>
+        <h3 class="text-xl font-semibold">Equipos</h3>
         <button id="showAddSubgroupForm" class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 inline-flex items-center">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
           </svg>
-          Agregar subgrupo
+          Agregar equipo
         </button>
         <% end %>
       </div>
@@ -46,26 +46,24 @@
       <% unless @public_view %>
       <!-- Formulario para agregar subgrupo (inicialmente oculto) -->
       <div id="addSubgroupForm" class="bg-gray-50 p-4 rounded-md mb-6 hidden">
-        <h4 class="text-lg font-medium mb-3">Agregar nuevo subgrupo</h4>
+        <h4 class="text-lg font-medium mb-3">Agregar nuevo equipo</h4>
         <form action="<%= round_subgroups_path(@round) %>" method="post" class="space-y-4">
           <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
           <div class="flex items-center space-x-4">
             <div class="flex-grow">
               <label for="subgroup_name" class="sr-only">Nombre</label>
-              <input type="text" name="subgroup[name]" id="subgroup_name" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" placeholder="Nombre del subgrupo" required>
+              <input type="text" name="subgroup[name]" id="subgroup_name" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" placeholder="Nombre del equipo" required>
             </div>
             <div class="flex space-x-2">
               <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 inline-flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                 </svg>
-                Guardar
               </button>
               <button type="button" id="cancelAddSubgroup" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 inline-flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
                 </svg>
-                Cancelar
               </button>
             </div>
           </div>
@@ -81,7 +79,7 @@
             <div class="flex justify-between items-center mb-2">
               <h4 class="font-medium text-lg"><%= subgroup.name %></h4>
               <% unless @public_view %>
-              <%= button_to round_subgroup_path(@round, subgroup), method: :delete, data: { turbo_confirm: "¿Estás seguro de que deseas eliminar este subgrupo?" }, class: "text-red-600 hover:text-red-900 bg-transparent border-0 cursor-pointer" do %>
+              <%= button_to round_subgroup_path(@round, subgroup), method: :delete, data: { turbo_confirm: "¿Estás seguro de que deseas eliminar este equipo?" }, class: "text-red-600 hover:text-red-900 bg-transparent border-0 cursor-pointer" do %>
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
                 </svg>
@@ -117,13 +115,13 @@
                 <% end %>
               </ul>
             <% else %>
-              <p class="text-gray-500 text-sm">No hay participantes en este subgrupo.</p>
+              <p class="text-gray-500 text-sm">No hay participantes en este equipo.</p>
             <% end %>
           </div>
         <% end %>
       </div>
       <% else %>
-      <p class="text-gray-500">No hay subgrupos disponibles.</p>
+      <p class="text-gray-500">No hay equipos disponibles.</p>
       <% end %>
     </div>
     
@@ -155,13 +153,11 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                 </svg>
-                Guardar
               </button>
               <button type="button" id="cancelAddParticipant" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 inline-flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
                 </svg>
-                Cancelar
               </button>
             </div>
           </div>
