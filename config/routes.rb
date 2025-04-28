@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     resources :subgroups, only: [:create, :destroy] do
       resources :samplings, only: [:create]
     end
+    resources :samplings, only: [:create], as: 'global_samplings'
   end
   devise_for :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
