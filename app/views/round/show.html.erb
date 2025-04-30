@@ -48,40 +48,44 @@
       <div class="flex justify-between items-center mb-4">
         <% unless @public_view %>
         <h3 class="text-xl font-semibold">Equipos</h3>
-        <button id="showAddSubgroupForm" class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 inline-flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-          </svg>
-          Agregar equipo
-        </button>
+        <div id="subgroup-button-container">
+          <button onclick="toggleSubgroupForm()" class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 inline-flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+            </svg>
+            Agregar equipo
+          </button>
+        </div>
         <% end %>
       </div>
       
       <% unless @public_view %>
       <!-- Formulario para agregar subgrupo (inicialmente oculto) -->
-      <div id="addSubgroupForm" class="bg-gray-50 p-4 rounded-md mb-6 hidden">
-        <h4 class="text-lg font-medium mb-3">Agregar nuevo equipo</h4>
-        <form action="<%= round_subgroups_path(@round) %>" method="post" class="space-y-4">
-          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-          <div class="flex items-center space-x-4">
-            <div class="flex-grow">
-              <label for="subgroup_name" class="sr-only">Nombre</label>
-              <input type="text" name="subgroup[name]" id="subgroup_name" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" placeholder="Nombre del equipo" required>
+      <div id="subgroup-form-container" style="display: none;">
+        <div class="bg-gray-50 p-4 rounded-md mb-6">
+          <h4 class="text-lg font-medium mb-3">Agregar nuevo equipo</h4>
+          <form action="<%= round_subgroups_path(@round) %>" method="post" class="space-y-4">
+            <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+            <div class="flex items-center space-x-4">
+              <div class="flex-grow">
+                <label for="subgroup_name" class="sr-only">Nombre</label>
+                <input type="text" name="subgroup[name]" id="subgroup_name" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" placeholder="Nombre del equipo" required>
+              </div>
+              <div class="flex space-x-2">
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 inline-flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                  </svg>
+                </button>
+                <button type="button" onclick="toggleSubgroupForm()" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 inline-flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </button>
+              </div>
             </div>
-            <div class="flex space-x-2">
-              <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 inline-flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                </svg>
-              </button>
-              <button type="button" id="cancelAddSubgroup" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 inline-flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
       <% end %>
       
@@ -184,39 +188,43 @@
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-xl font-semibold">Participantes</h3>
         <% unless @public_view %>
-        <button id="showAddParticipantForm" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 inline-flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-            <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
-          </svg>
-          Agregar participante
-        </button>
+        <div id="participant-button-container">
+          <button onclick="toggleParticipantForm()" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 inline-flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
+            </svg>
+            Agregar participante
+          </button>
+        </div>
         <% end %>
       </div>
       
       <% unless @public_view %>
       <!-- Formulario para agregar participante (inicialmente oculto) -->
-      <div id="addParticipantForm" class="bg-gray-50 p-4 rounded-md mb-6 hidden">
-        <h4 class="text-lg font-medium mb-3">Agregar nuevo participante</h4>
-        <%= form_with(model: [@round, Participant.new], local: true, class: "space-y-4") do |f| %>
-          <div class="flex items-center space-x-4">
-            <div class="flex-grow">
-              <%= f.label :name, "Nombre", class: "sr-only" %>
-              <%= f.text_field :name, class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50", placeholder: "Nombre del participante" %>
+      <div id="participant-form-container" style="display: none;">
+        <div class="bg-gray-50 p-4 rounded-md mb-6">
+          <h4 class="text-lg font-medium mb-3">Agregar nuevo participante</h4>
+          <%= form_with(model: [@round, Participant.new], local: true, class: "space-y-4") do |f| %>
+            <div class="flex items-center space-x-4">
+              <div class="flex-grow">
+                <%= f.label :name, "Nombre", class: "sr-only" %>
+                <%= f.text_field :name, class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50", placeholder: "Nombre del participante" %>
+              </div>
+              <div class="flex space-x-2">
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 inline-flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                  </svg>
+                </button>
+                <button type="button" onclick="toggleParticipantForm()" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 inline-flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </button>
+              </div>
             </div>
-            <div class="flex space-x-2">
-              <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 inline-flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                </svg>
-              </button>
-              <button type="button" id="cancelAddParticipant" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 inline-flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        <% end %>
+          <% end %>
+        </div>
       </div>
       <% end %>
       
@@ -329,39 +337,50 @@
         }
       }
       
-      document.addEventListener('DOMContentLoaded', function() {
-        // Formulario de participantes
-        const showFormButton = document.getElementById('showAddParticipantForm');
-        const cancelButton = document.getElementById('cancelAddParticipant');
-        const form = document.getElementById('addParticipantForm');
+      // Funciones para mostrar/ocultar formularios
+      function toggleSubgroupForm() {
+        const buttonContainer = document.getElementById('subgroup-button-container');
+        const formContainer = document.getElementById('subgroup-form-container');
         
-        if (showFormButton && cancelButton && form) {
-          showFormButton.addEventListener('click', function() {
-            form.classList.remove('hidden');
-            showFormButton.classList.add('hidden');
-          });
-          
-          cancelButton.addEventListener('click', function() {
-            form.classList.add('hidden');
-            showFormButton.classList.remove('hidden');
-          });
+        if (formContainer.style.display === 'none') {
+          formContainer.style.display = 'block';
+          buttonContainer.style.display = 'none';
+        } else {
+          formContainer.style.display = 'none';
+          buttonContainer.style.display = 'block';
+        }
+      }
+      
+      function toggleParticipantForm() {
+        const buttonContainer = document.getElementById('participant-button-container');
+        const formContainer = document.getElementById('participant-form-container');
+        
+        if (formContainer.style.display === 'none') {
+          formContainer.style.display = 'block';
+          buttonContainer.style.display = 'none';
+        } else {
+          formContainer.style.display = 'none';
+          buttonContainer.style.display = 'block';
+        }
+      }
+      
+      // Inicializar estado de los formularios al cargar la página
+      document.addEventListener('DOMContentLoaded', function() {
+        // Asegurarse de que los formularios estén ocultos y los botones visibles al cargar la página
+        const subgroupFormContainer = document.getElementById('subgroup-form-container');
+        const subgroupButtonContainer = document.getElementById('subgroup-button-container');
+        
+        if (subgroupFormContainer && subgroupButtonContainer) {
+          subgroupFormContainer.style.display = 'none';
+          subgroupButtonContainer.style.display = 'block';
         }
         
-        // Formulario de subgrupos
-        const showSubgroupFormButton = document.getElementById('showAddSubgroupForm');
-        const cancelSubgroupButton = document.getElementById('cancelAddSubgroup');
-        const subgroupForm = document.getElementById('addSubgroupForm');
+        const participantFormContainer = document.getElementById('participant-form-container');
+        const participantButtonContainer = document.getElementById('participant-button-container');
         
-        if (showSubgroupFormButton && cancelSubgroupButton && subgroupForm) {
-          showSubgroupFormButton.addEventListener('click', function() {
-            subgroupForm.classList.remove('hidden');
-            showSubgroupFormButton.classList.add('hidden');
-          });
-          
-          cancelSubgroupButton.addEventListener('click', function() {
-            subgroupForm.classList.add('hidden');
-            showSubgroupFormButton.classList.remove('hidden');
-          });
+        if (participantFormContainer && participantButtonContainer) {
+          participantFormContainer.style.display = 'none';
+          participantButtonContainer.style.display = 'block';
         }
       });
     </script>
