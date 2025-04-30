@@ -30,6 +30,12 @@ class ParticipantsController < ApplicationController
     elsif params[:decrement].present? && @participant.count > 0
       @participant.decrement!(:count)
       redirect_to redirect_url, notice: 'Contador decrementado.'
+    elsif params[:available].present?
+      # Actualizar disponibilidad
+      available = params[:available] == "true"
+      @participant.update(available: available)
+      status_message = available ? 'Participante marcado como disponible.' : 'Participante marcado como no disponible.'
+      redirect_to redirect_url, notice: status_message
     elsif params[:subgroup_id].present?
       # Mover a un subgrupo
       if params[:subgroup_id] == "0"
@@ -71,6 +77,6 @@ class ParticipantsController < ApplicationController
   end
   
   def participant_params
-    params.require(:participant).permit(:name)
+    params.require(:participant).permit(:name, :available)
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_28_151406) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_30_161207) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -21,6 +21,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_28_151406) do
     t.bigint "round_id"
     t.bigint "subgroup_id"
     t.integer "count", default: 0
+    t.boolean "available", default: true
     t.index ["round_id"], name: "index_participants_on_round_id"
     t.index ["subgroup_id"], name: "index_participants_on_subgroup_id"
   end
