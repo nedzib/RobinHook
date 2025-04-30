@@ -399,6 +399,7 @@
           </p>
           
           <%= form_with(url: round_subgroup_samplings_path(@round, subgroup), method: :post, data: { remote: true }, class: "mt-4") do |f| %>
+            <%= hidden_field_tag :public_view, @public_view.to_s %>
             <div class="mb-4">
               <%= f.label :pr_url, "URL del PR", class: "block text-sm font-medium text-gray-700 text-left" %>
               <%= f.url_field :pr_url, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50", placeholder: "https://github.com/usuario/repo/pull/123", required: true %>
@@ -428,6 +429,7 @@
           </p>
           
           <%= form_with(url: round_global_samplings_path(@round), method: :post, data: { remote: true }, class: "mt-4") do |f| %>
+            <%= hidden_field_tag :public_view, @public_view.to_s %>
             <div class="mb-4">
               <%= f.label :pr_url, "URL del PR", class: "block text-sm font-medium text-gray-700 text-left" %>
               <%= f.url_field :pr_url, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50", placeholder: "https://github.com/usuario/repo/pull/123", required: true %>

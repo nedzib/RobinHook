@@ -30,7 +30,17 @@ class SamplingsController < ApplicationController
     end
 
     respond_to do |format|
-      format.html { redirect_to round_path(@round) }
+      format.html do
+        # Determinar si la solicitud viene de la vista pública
+        is_public_view = params[:public_view] == "true"
+        
+        # Redirigir a la vista pública o privada según corresponda
+        if is_public_view
+          redirect_to rounds_public_path(hash_id: @round.hash_id)
+        else
+          redirect_to round_path(@round)
+        end
+      end
       format.js
     end
   end
