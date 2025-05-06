@@ -18,7 +18,7 @@ class SamplingsController < ApplicationController
 
     if @participant
       if params[:pr_url].present? && @round.web_hook.present?
-        message = "#{@participant.name} ha sido seleccionado (#{source}) para revisar el PR: #{params[:pr_url]}"
+        message = "#{@participant.name} ha sido seleccionadx (#{source}) para revisar el PR: #{params[:pr_url]}"
         notifier = WebhookNotificationService.new(@round.web_hook)
         notifier.send_notification(message)
         flash[:notice] = "#{@participant.name} ha sido seleccionado y se ha enviado la notificación."
@@ -33,7 +33,7 @@ class SamplingsController < ApplicationController
       format.html do
         # Determinar si la solicitud viene de la vista pública
         is_public_view = params[:public_view] == "true"
-        
+
         # Redirigir a la vista pública o privada según corresponda
         if is_public_view
           redirect_to rounds_public_path(hash_id: @round.hash_id)
