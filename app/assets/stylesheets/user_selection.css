@@ -1,0 +1,35 @@
+.user-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.user-icon:hover {
+  transform: scale(1.1);
+}
+
+.user-icon svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.notification {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 0.375rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  z-index: 50;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.notification.hiding {
+  opacity: 0;
+}

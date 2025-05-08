@@ -1,6 +1,7 @@
 class GlobalRoundRobinSamplerService
-  def initialize(round)
+  def initialize(round, current_user_name = nil)
     @round = round
+    @current_user_name = current_user_name
   end
   
   def sample
@@ -13,6 +14,17 @@ class GlobalRoundRobinSamplerService
     
     # Seleccionar todos los participantes disponibles con el conteo mínimo
     candidates = participants.where(count: min_count)
+    
+    # Filtrar el usuario actual si se proporcionó
+    if @current_user_name.present?
+      candidates = candidates.where.not(name: @current_user_name)
+      # Si no quedan candidatos después del filtrado, seleccionar entre todos los disponibles
+      if candidates.empty?
+        candidates = participants.where.not(name: @current_user_name)
+        # Si aún no hay candidatos disponibles, usamos todos
+        candidates = participants if candidates.empty?
+      end
+    end
     
     # Seleccionar aleatoriamente uno de los candidatos
     selected = candidates.sample

@@ -4,14 +4,17 @@ class SamplingsController < ApplicationController
   before_action :set_subgroup, only: [ :create ], if: -> { params[:subgroup_id].present? }
 
   def create
+    # Obtener el nombre del usuario actual desde el parámetro
+    current_user_name = params[:current_user_name]
+
     if @subgroup
       # Muestreo por equipo
-      @sampler = RoundRobinSamplerService.new(@subgroup)
+      @sampler = RoundRobinSamplerService.new(@subgroup, current_user_name)
       @participant = @sampler.sample
       source = "del equipo #{@subgroup.name}"
     else
       # Muestreo global
-      @sampler = GlobalRoundRobinSamplerService.new(@round)
+      @sampler = GlobalRoundRobinSamplerService.new(@round, current_user_name)
       @participant = @sampler.sample
       source = "global"
     end

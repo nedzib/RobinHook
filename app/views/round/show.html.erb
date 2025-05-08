@@ -139,7 +139,7 @@
                             </span>
                           <% end %>
                         <% end %>
-                        <span class="text-gray-900"><%= participant.name %></span>
+                        <span class="text-gray-900" data-participant-id="<%= participant.id %>"><%= participant.name %></span>
                       </div>
                       <div class="flex items-center ml-2 space-x-1">
                         <%= button_to round_participant_path(@round, participant, decrement: true, public_view: @public_view.to_s), method: :patch, class: "text-blue-600 hover:text-blue-900 bg-transparent border-0 cursor-pointer" do %>
@@ -263,7 +263,7 @@
                       <% end %>
                     <% end %>
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><%= participant.name %></td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" data-participant-id="<%= participant.id %>"><%= participant.name %></td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <div class="flex items-center space-x-2">
                       <%= button_to round_participant_path(@round, participant, decrement: true, public_view: @public_view.to_s), method: :patch, class: "text-blue-600 hover:text-blue-900 bg-transparent border-0 cursor-pointer" do %>
@@ -400,6 +400,7 @@
           
           <%= form_with(url: round_subgroup_samplings_path(@round, subgroup), method: :post, data: { remote: true }, class: "mt-4") do |f| %>
             <%= hidden_field_tag :public_view, @public_view.to_s %>
+            <%= hidden_field_tag :current_user_name, "", id: "current_user_name_subgroup_#{subgroup.id}" %>
             <div class="mb-4">
               <%= f.label :pr_url, "URL del PR", class: "block text-sm font-medium text-gray-700 text-left" %>
               <%= f.url_field :pr_url, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50", placeholder: "https://github.com/usuario/repo/pull/123", required: true %>
@@ -430,6 +431,7 @@
           
           <%= form_with(url: round_global_samplings_path(@round), method: :post, data: { remote: true }, class: "mt-4") do |f| %>
             <%= hidden_field_tag :public_view, @public_view.to_s %>
+            <%= hidden_field_tag :current_user_name, "", id: "current_user_name_global" %>
             <div class="mb-4">
               <%= f.label :pr_url, "URL del PR", class: "block text-sm font-medium text-gray-700 text-left" %>
               <%= f.url_field :pr_url, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50", placeholder: "https://github.com/usuario/repo/pull/123", required: true %>
@@ -443,26 +445,33 @@
             </div>
           <% end %>
         </div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- JavaScript para manejar los modales -->
-  <script>
-    function openSamplingModal(subgroupId) {
-      document.getElementById('samplingModal' + subgroupId).classList.remove('hidden');
-    }
+
+          <script>
+            function openSamplingModal(subgroupId) {
+              document.getElementById('samplingModal' + subgroupId).classList.remove('hidden');
+              // Establecer el usuario actual en el formulario
+              const currentUser = localStorage.getItem('currentParticipantName');
+              if (currentUser) {
+                document.getElementById('current_user_name_subgroup_' + subgroupId).value = currentUser;
+              }
+            }
     
-    function closeSamplingModal(subgroupId) {
-      document.getElementById('samplingModal' + subgroupId).classList.add('hidden');
-    }
+            function closeSamplingModal(subgroupId) {
+              document.getElementById('samplingModal' + subgroupId).classList.add('hidden');
+            }
     
-    function openGlobalSamplingModal() {
-      document.getElementById('globalSamplingModal').classList.remove('hidden');
-    }
+            function openGlobalSamplingModal() {
+              document.getElementById('globalSamplingModal').classList.remove('hidden');
+              // Establecer el usuario actual en el formulario
+              const currentUser = localStorage.getItem('currentParticipantName');
+              if (currentUser) {
+                document.getElementById('current_user_name_global').value = currentUser;
+              }
+            }
     
-    function closeGlobalSamplingModal() {
-      document.getElementById('globalSamplingModal').classList.add('hidden');
-    }
-  </script>
+            function closeGlobalSamplingModal() {
+              document.getElementById('globalSamplingModal').classList.add('hidden');
+            }
+          </script>
+          <%= javascript_include_tag "user_selection" %>
 </div>
