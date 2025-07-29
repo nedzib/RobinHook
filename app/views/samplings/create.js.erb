@@ -1,11 +1,16 @@
-// Cerrar el modal si está abierto
+// Cerrar todos los modales de muestreo
 document.querySelectorAll('.sampling-modal').forEach(function(modal) {
   modal.classList.add('hidden');
 });
 
-// Mostrar mensaje de notificación
+// Mostrar mensaje de notificación usando Stimulus
 <% if flash[:notice] %>
-  alert("<%= flash[:notice] %>");
+  // Crear un evento personalizado para mostrar notificación
+  document.dispatchEvent(new CustomEvent('notification:show', {
+    detail: { message: "<%= flash[:notice] %>", type: "success" }
+  }));
 <% elsif flash[:alert] %>
-  alert("<%= flash[:alert] %>");
+  document.dispatchEvent(new CustomEvent('notification:show', {
+    detail: { message: "<%= flash[:alert] %>", type: "error" }
+  }));
 <% end %>
