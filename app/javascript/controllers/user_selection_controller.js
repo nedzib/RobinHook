@@ -51,13 +51,13 @@ export default class extends Controller {
     document.querySelectorAll('[data-controller*="user-selection"]').forEach(element => {
       const controller = this.application.getControllerForElementAndIdentifier(element, "user-selection")
       if (controller && controller.hasIconTarget) {
-        const svgElement = controller.iconTarget.querySelector('svg')
+        const iconElement = controller.iconTarget.querySelector('i') // Cambié de svg a i para Nerd Fonts
         const iconName = controller.participantNameValue
         
         if (iconName === currentUserName) {
-          svgElement.setAttribute('fill', this.activeColorValue)
+          iconElement.style.color = this.activeColorValue
         } else {
-          svgElement.setAttribute('fill', this.inactiveColorValue)
+          iconElement.style.color = this.inactiveColorValue
         }
       }
     })

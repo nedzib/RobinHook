@@ -6,23 +6,19 @@
         <div class="flex space-x-2">
           <!-- Botón de muestreo global (disponible en vista pública) -->
           <button type="button" data-action="click->modal-manager#open" data-modal-target="#globalSamplingModal" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 inline-flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M6.672 1.911a1 1 0 10-1.932.518l.259.966a1 1 0 001.932-.518l-.26-.966zM2.429 4.74a1 1 0 10-.517 1.932l.966.259a1 1 0 00.517-1.932l-.966-.26zm8.814-.569a1 1 0 00-1.415-1.414l-.707.707a1 1 0 101.415 1.415l.707-.708zm-7.071 7.072l.707-.707A1 1 0 003.465 9.12l-.708.707a1 1 0 001.415 1.415zm3.2-5.171a1 1 0 00-1.3 1.3l4 10a1 1 0 001.823.075l1.38-2.759 3.018 3.02a1 1 0 001.414-1.415l-3.019-3.02 2.76-1.379a1 1 0 00-.076-1.822l-10-4z" clip-rule="evenodd" />
-            </svg>
+            <i class="nf nf-cod-wand mr-2"></i>
+            Muestreo Global
           </button>
           
           <% unless @public_view %>
           <!-- Botón para resetear contadores (solo en vista privada) -->
           <%= button_to reset_round_counters_path(@round), method: :post, data: { turbo_confirm: "¿Estás seguro de que deseas resetear todos los contadores a cero?" }, class: "px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 inline-flex items-center" do %>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
-            </svg>
+            <i class="nf nf-fa-refresh mr-2"></i>
+            Resetear
           <% end %>
           
           <%= link_to rounds_path, class: "px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 inline-flex items-center" do %>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
-            </svg>
+            <i class="nf nf-fa-arrow_left mr-2"></i>
             Volver
           <% end %>
           <% end %>
@@ -52,9 +48,7 @@
           <h3 class="text-xl font-semibold">Equipos</h3>
           <div data-form-toggle-target="button">
             <button data-action="click->form-toggle#toggle" class="px-4 py-2 m-4 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 inline-flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-              </svg>
+              <i class="nf nf-fa-plus mr-2"></i>
               Agregar equipo
             </button>
           </div>
@@ -73,14 +67,10 @@
                   </div>
                   <div class="flex space-x-2">
                     <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 inline-flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                      </svg>
+                      <i class="nf nf-fa-check h-5 w-5 mr-2"></i>
                     </button>
                     <button type="button" data-action="click->form-toggle#cancel" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 inline-flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-                      </svg>
+                      <i class="nf nf-fa-times h-5 w-5 mr-2"></i>
                     </button>
                   </div>
                 </div>
@@ -98,17 +88,13 @@
               <div class="flex space-x-2">
                 <!-- Botón para abrir el modal de muestreo (disponible en vista pública) -->
                 <button type="button" data-action="click->modal-manager#open" data-modal-target="#samplingModal<%= subgroup.id %>" data-subgroup-id="<%= subgroup.id %>" class="text-blue-600 hover:text-blue-900 bg-transparent border-0 cursor-pointer">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M6.672 1.911a1 1 0 10-1.932.518l.259.966a1 1 0 001.932-.518l-.26-.966zM2.429 4.74a1 1 0 10-.517 1.932l.966.259a1 1 0 00.517-1.932l-.966-.26zm8.814-.569a1 1 0 00-1.415-1.414l-.707.707a1 1 0 101.415 1.415l.707-.708zm-7.071 7.072l.707-.707A1 1 0 003.465 9.12l-.708.707a1 1 0 001.415 1.415zm3.2-5.171a1 1 0 00-1.3 1.3l4 10a1 1 0 001.823.075l1.38-2.759 3.018 3.02a1 1 0 001.414-1.415l-3.019-3.02 2.76-1.379a1 1 0 00-.076-1.822l-10-4z" clip-rule="evenodd" />
-                  </svg>
+                  <i class="nf nf-cod-wand text-2xl"></i>
                 </button>
                 
                 <% unless @public_view %>
                 <!-- Botón para eliminar el equipo (solo en vista privada) -->
                 <%= button_to round_subgroup_path(@round, subgroup), method: :delete, data: { turbo_confirm: "¿Estás seguro de que deseas eliminar este equipo?" }, class: "text-red-600 hover:text-red-900 bg-transparent border-0 cursor-pointer" do %>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                  </svg>
+                  <i class="nf nf-fa-trash text-sm"></i>
                 <% end %>
                 <% end %>
               </div>
@@ -124,38 +110,28 @@
                         <%= button_to round_participant_path(@round, participant, available: !participant.available, public_view: @public_view.to_s), method: :patch, class: "mr-2" do %>
                           <% if participant.available %>
                             <span class="inline-flex items-center p-2 bg-green-100 text-green-800 text-xs font-medium rounded-full">
-                              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                              </svg>
+                              <i class="nf nf-fa-check h-3 w-3"></i>
                             </span>
                           <% else %>
                             <span class="inline-flex items-center p-2 bg-red-100 text-red-800 text-xs font-medium rounded-full">
-                              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-                              </svg>
+                              <i class="nf nf-fa-times h-3 w-3"></i>
                             </span>
                           <% end %>
                         <% end %>
                         <div data-controller="user-selection" data-user-selection-participant-name-value="<%= participant.name %>" class="flex items-center">
                           <span data-user-selection-target="icon" data-action="click->user-selection#selectUser" class="cursor-pointer mr-1 inline-flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="#9ca3af">
-                              <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
-                            </svg>
+                            <i class="nf nf-fa-user h-5 w-5" style="color: #9ca3af;"></i>
                           </span>
                           <span class="text-gray-900" data-participant-id="<%= participant.id %>"><%= participant.name %></span>
                         </div>
                       </div>
                       <div class="flex items-center ml-2 space-x-1">
                         <%= button_to round_participant_path(@round, participant, decrement: true, public_view: @public_view.to_s), method: :patch, class: "text-blue-600 hover:text-blue-900 bg-transparent border-0 cursor-pointer" do %>
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
-                          </svg>
+                          <i class="nf nf-fa-minus h-4 w-4"></i>
                         <% end %>
                         <span class="px-2 py-1 bg-gray-100 rounded-md text-xs font-medium"><%= participant.count %></span>
                         <%= button_to round_participant_path(@round, participant, increment: true, public_view: @public_view.to_s), method: :patch, class: "text-blue-600 hover:text-blue-900 bg-transparent border-0 cursor-pointer" do %>
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-                          </svg>
+                          <i class="nf nf-fa-plus h-4 w-4"></i>
                         <% end %>
                       </div>
                     </div>
@@ -166,9 +142,7 @@
                         <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
                         <input type="hidden" name="subgroup_id" value="0">
                         <button type="submit" class="text-blue-600 hover:text-blue-900 bg-transparent border-0 cursor-pointer text-xs inline-flex items-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
-                          </svg>
+                          <i class="nf nf-fa-sign_out text-base ml-4"></i>
                         </button>
                       </form>
                     </div>
@@ -195,9 +169,7 @@
           <h3 class="text-xl font-semibold self-center">Participantes</h3>
           <div data-form-toggle-target="button" class="flex justify-self-center">
             <button data-action="click->form-toggle#toggle" class="px-4 py-2 m-4 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 inline-flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
-              </svg>
+              <i class="nf nf-fa-plus h-5 w-5 mr-2"></i>
               Agregar participante
             </button>
           </div>
@@ -215,14 +187,10 @@
                   </div>
                   <div class="flex space-x-2">
                     <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 inline-flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                      </svg>
+                      <i class="nf nf-fa-check h-5 w-5 mr-2"></i>
                     </button>
                     <button type="button" data-action="click->form-toggle#cancel" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 inline-flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-                      </svg>
+                      <i class="nf nf-fa-times h-5 w-5 mr-2"></i>
                     </button>
                   </div>
                 </div>
@@ -251,16 +219,12 @@
                     <%= button_to round_participant_path(@round, participant, available: !participant.available, public_view: @public_view.to_s), method: :patch do %>
                       <% if participant.available %>
                         <span class="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                          </svg>
+                          <i class="nf nf-fa-check h-3 w-3 mr-1"></i>
                           Disponible
                         </span>
                       <% else %>
                         <span class="inline-flex items-center px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded-full">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-                          </svg>
+                          <i class="nf nf-fa-times h-3 w-3 mr-1"></i>
                           No disponible
                         </span>
                       <% end %>
@@ -269,9 +233,7 @@
                   <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" data-participant-id="<%= participant.id %>">
                     <div data-controller="user-selection" data-user-selection-participant-name-value="<%= participant.name %>" class="flex items-center">
                       <span data-user-selection-target="icon" data-action="click->user-selection#selectUser" class="cursor-pointer mr-2 inline-flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="#9ca3af">
-                          <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
-                        </svg>
+                        <i class="nf nf-fa-user h-5 w-5" style="color: #9ca3af;"></i>
                       </span>
                       <span><%= participant.name %></span>
                     </div>
@@ -279,15 +241,11 @@
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <div class="flex items-center space-x-2">
                       <%= button_to round_participant_path(@round, participant, decrement: true, public_view: @public_view.to_s), method: :patch, class: "text-blue-600 hover:text-blue-900 bg-transparent border-0 cursor-pointer" do %>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
-                        </svg>
+                        <i class="nf nf-fa-minus h-5 w-5"></i>
                       <% end %>
                       <span class="px-3 py-1 bg-gray-100 rounded-md font-medium"><%= participant.count %></span>
                       <%= button_to round_participant_path(@round, participant, increment: true, public_view: @public_view.to_s), method: :patch, class: "text-blue-600 hover:text-blue-900 bg-transparent border-0 cursor-pointer" do %>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-                        </svg>
+                        <i class="nf nf-fa-plus h-5 w-5"></i>
                       <% end %>
                     </div>
                   </td>
@@ -297,9 +255,7 @@
                       <% if @round.subgroups.any? %>
                         <div class="inline-block relative">
                           <div class="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 absolute left-2 pointer-events-none" viewBox="0 0 20 20" fill="currentColor">
-                              <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
-                            </svg>
+                            <i class="nf nf-fa-user_pen h-5 w-5 text-gray-500 absolute left-2 pointer-events-none"></i>
                             <select id="subgroupSelect<%= participant.id %>" class="rounded-md border border-gray-300 shadow-sm pl-8 pr-3 py-1 bg-white text-sm font-medium text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 appearance-none" onchange="moveToSubgroup(this, <%= participant.id %>, <%= @round.id %>)">
                               <option value="">Mover</option>
                               <% @round.subgroups.each do |subgroup| %>
@@ -307,7 +263,7 @@
                               <% end %>
                             </select>
                             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                              <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                              <i class="nf nf-fa-chevron-down h-4 w-4"></i>
                             </div>
                           </div>
                           
@@ -319,9 +275,7 @@
                         </div>
                       <% end %>
                       <%= button_to round_participant_path(@round, participant), method: :delete, data: { turbo_confirm: "¿Estás seguro de que deseas eliminar este participante?" }, class: "text-red-600 hover:text-red-900 bg-transparent border-0 cursor-pointer inline-flex items-center" do %>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                          <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                        </svg>
+                        <i class="nf nf-fa-trash h-5 w-5 mr-1"></i>
                       <% end %>
                     </div>
                   </td>
