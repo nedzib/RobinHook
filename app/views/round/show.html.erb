@@ -105,7 +105,6 @@
               <ul class="divide-y divide-gray-200">
                 <% participants.each do |participant| %>
                   <li class="py-2 flex justify-between items-center">
-                    <div class="flex items-center">
                       <div class="flex items-center">
                         <%= button_to round_participant_path(@round, participant, available: !participant.available, public_view: @public_view.to_s), method: :patch, class: "mr-2" do %>
                           <% if participant.available %>
@@ -125,7 +124,7 @@
                           <span class="text-gray-900" data-participant-id="<%= participant.id %>"><%= participant.name %></span>
                         </div>
                       </div>
-                      <div class="flex items-center ml-2 space-x-1">
+                      <div class="flex items-center ml-6 space-x-1">
                         <%= button_to round_participant_path(@round, participant, decrement: true, public_view: @public_view.to_s), method: :patch, class: "text-blue-600 hover:text-blue-900 bg-transparent border-0 cursor-pointer" do %>
                           <i class="nf nf-fa-minus h-4 w-4"></i>
                         <% end %>
@@ -134,7 +133,6 @@
                           <i class="nf nf-fa-plus h-4 w-4"></i>
                         <% end %>
                       </div>
-                    </div>
                     <% unless @public_view %>
                     <div class="flex items-center space-x-2">
                       <form action="<%= round_participant_path(@round, participant) %>" method="post" class="inline">
