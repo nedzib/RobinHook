@@ -80,14 +80,14 @@
         </div>
         <% end %>      <!-- Listado de subgrupos -->
       <% if @round.subgroups.any? %>
-      <div class="flex">
+      <div class="flex flex-wrap">
         <% @round.subgroups.each do |subgroup| %>
           <div class="bg-white p-4 rounded-lg shadow border border-gray-200 m-4">
             <div class="flex justify-between items-center mb-2 flex-row">
               <h4 class="font-medium text-lg"><%= subgroup.name %></h4>
               <div class="flex space-x-2">
                 <!-- Botón para abrir el modal de muestreo (disponible en vista pública) -->
-                <button type="button" data-action="click->modal-manager#open" data-modal-target="#samplingModal<%= subgroup.id %>" data-subgroup-id="<%= subgroup.id %>" class="text-blue-600 hover:text-blue-900 bg-transparent border-0 cursor-pointer">
+                <button type="button" data-action="click->modal-manager#open" data-modal-target="#samplingModal<%= subgroup.id %>" data-subgroup-id="<%= subgroup.id %>" class="ml-6 text-blue-600 hover:text-blue-900 bg-transparent border-0 cursor-pointer">
                   <i class="nf nf-cod-wand text-2xl"></i>
                 </button>
                 
