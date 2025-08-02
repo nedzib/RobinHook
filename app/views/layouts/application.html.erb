@@ -29,5 +29,15 @@
     <main class="container mx-auto mt-28 px-5 flex">
       <%= yield %>
     </main>
+
+    <!-- Flash messages -->
+    <% if flash.any? %>
+      <% flash.each do |type, message| %>
+        <div data-controller="notification" 
+             data-notification-message-value="<%= message %>" 
+             data-notification-type-value="<%= type == 'notice' ? 'success' : 'error' %>">
+        </div>
+      <% end %>
+    <% end %>
   </body>
 </html>

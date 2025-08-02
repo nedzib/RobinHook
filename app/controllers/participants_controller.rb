@@ -1,82 +1,118 @@
 class ParticipantsController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:update]
+  skip_before_action :authenticate_user!, only: [ :update ]
   before_action :set_round
-  before_action :set_participant, only: [:update, :destroy]
-  
+  before_action :set_participant, only: [ :update, :destroy ]
+
   def create
     @participant = @round.participants.new(participant_params)
-    
+
     if @participant.save
-      redirect_to round_path(@round), notice: 'Participante agregado exitosamente.'
+      redirect_to round_path(@round), notice: "Participante agregado exitosamente."
     else
-      redirect_to round_path(@round), alert: 'Error al agregar participante.'
+      redirect_to round_path(@round), alert: "Error al agregar participante."
     end
   end
-  
+
   def update
     # Determinar si la solicitud viene de la vista pública
     is_public_view = params[:public_view] == "true"
-    
+
     # Determinar la URL de redirección
     redirect_url = if is_public_view
       rounds_public_path(hash_id: @round.hash_id)
     else
       round_path(@round)
     end
-    
+
     if params[:increment].present?
       @participant.increment!(:count)
-      redirect_to redirect_url, notice: 'Contador incrementado.'
+      redirect_to redirect_url, notice: "Contador +1."
     elsif params[:decrement].present? && @participant.count > 0
       @participant.decrement!(:count)
-      redirect_to redirect_url, notice: 'Contador decrementado.'
+      redirect_to redirect_url, notice: "Contador -1."
     elsif params[:available].present?
       # Actualizar disponibilidad
       available = params[:available] == "true"
+      old_available = @participant.available
+
       @participant.update(available: available)
-      status_message = available ? 'Participante marcado como disponible.' : 'Participante marcado como no disponible.'
+
+      # Si el participante pasa de no disponible a disponible, ajustar su conteo
+      if !old_available && available
+        adjust_participant_count_on_return(@participant)
+        status_message = "Participante marcado como disponible y conteo ajustado."
+      else
+        status_message = available ? "Participante marcado como disponible." : "Participante marcado como no disponible."
+      end
+
       redirect_to redirect_url, notice: status_message
     elsif params[:subgroup_id].present?
       # Mover a un subgrupo
       if params[:subgroup_id] == "0"
         @participant.update(subgroup_id: nil, round_id: @round.id)
-        redirect_to redirect_url, notice: 'Participante movido a la ronda principal.'
+        redirect_to redirect_url, notice: "Participante movido a la ronda principal."
       else
         subgroup = @round.subgroups.find_by(id: params[:subgroup_id])
         if subgroup
           @participant.update(subgroup_id: subgroup.id, round_id: nil)
-          redirect_to redirect_url, notice: 'Participante movido al subgrupo.'
+          redirect_to redirect_url, notice: "Participante movido al subgrupo."
         else
-          redirect_to redirect_url, alert: 'Subgrupo no encontrado.'
+          redirect_to redirect_url, alert: "Subgrupo no encontrado."
         end
       end
     else
       redirect_to redirect_url
     end
   end
-  
+
   def destroy
     @participant.destroy
-    
-    redirect_to round_path(@round), notice: 'Participante eliminado exitosamente.'
+
+    redirect_to round_path(@round), notice: "Participante eliminado exitosamente."
   end
-  
+
   private
-  
+
   def set_round
     @round = Round.find(params[:round_id])
   end
-  
+
   def set_participant
     # Buscar el participante tanto en la ronda principal como en los subgrupos
-    @participant = Participant.where(id: params[:id]).where('round_id = ? OR subgroup_id IN (?)', @round.id, @round.subgroups.pluck(:id)).first
-    
+    @participant = Participant.where(id: params[:id]).where("round_id = ? OR subgroup_id IN (?)", @round.id, @round.subgroups.pluck(:id)).first
+
     unless @participant
-      redirect_to round_path(@round), alert: 'Participante no encontrado.'
+      redirect_to round_path(@round), alert: "Participante no encontrado."
     end
   end
-  
+
   def participant_params
     params.require(:participant).permit(:name, :available)
+  end
+
+  # Ajusta el conteo de un participante cuando vuelve a estar disponible
+  def adjust_participant_count_on_return(participant)
+    # Determinar si el participante está en un subgrupo o en la ronda principal
+    if participant.subgroup_id.present?
+      # Participante está en un subgrupo
+      available_participants = Participant.where(subgroup_id: participant.subgroup_id, available: true)
+                                         .where.not(id: participant.id)
+    else
+      # Participante está en la ronda principal
+      available_participants = @round.participants.where(available: true)
+                                    .where.not(id: participant.id)
+    end
+
+    if available_participants.any?
+      # Obtener el conteo más bajo de los participantes disponibles
+      min_count = available_participants.minimum(:count)
+
+      # Asignar ese conteo al participante que regresa
+      participant.update(count: min_count)
+    else
+      # Si no hay otros participantes disponibles, mantener el conteo actual
+      # o ponerlo en 0 si se prefiere
+      participant.update(count: 0)
+    end
   end
 end
