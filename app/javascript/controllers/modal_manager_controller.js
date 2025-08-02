@@ -68,41 +68,12 @@ export default class extends Controller {
 
   // Muestra una alerta personalizada cuando no hay usuario seleccionado
   showUserSelectionAlert(modalTarget) {
-    // Verificar si ya existe una alerta
-    let alertModal = document.querySelector('#customAlert')
-
+    // Obtener la alerta que ya está en el DOM
+    const alertModal = document.querySelector('#customAlert')
+    
     if (!alertModal) {
-      // Crear la alerta personalizada
-      alertModal = document.createElement('div')
-      alertModal.id = 'customAlert'
-      alertModal.className = 'fixed inset-0 overflow-y-auto h-full w-full z-50'
-      alertModal.style.backgroundColor = 'rgba(75, 85, 99, 0.5)' // Equivalente a bg-gray-600 con 50% opacity
-      alertModal.innerHTML = `
-        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-          <div class="mt-3 text-center">
-            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100">
-              <i class="nf nf-fa-question h-6 w-6 text-blue-600"></i>
-            </div>
-            <h3 class="text-lg leading-6 font-medium text-gray-900 mt-4">¿Quién eres en el grupo?</h3>
-            <div class="mt-2 px-7 py-3">
-              <p class="text-sm text-gray-500">
-                No has indicado quién eres en el grupo. Aunque no es obligatorio, 
-                se recomienda seleccionar tu nombre haciendo clic en el ícono de usuario. ¿Deseas continuar sin seleccionar o volver 
-                para elegir tu participante?
-              </p>
-            </div>
-            <div class="flex justify-center space-x-4 mt-4">
-              <button id="alertCancel" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">
-                Volver
-              </button>
-              <button id="alertContinue" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-                Continuar
-              </button>
-            </div>
-          </div>
-        </div>
-      `
-      document.body.appendChild(alertModal)
+      console.error('Modal de alerta no encontrado en el DOM')
+      return
     }
 
     // Limpiar event listeners existentes para evitar duplicados
@@ -122,16 +93,13 @@ export default class extends Controller {
     })
 
     newAlertContinue.addEventListener('click', () => {
-      console.log('Continuar clicked, modalTarget:', modalTarget)
       alertModal.classList.add('hidden')
 
       // Usar un pequeño delay para asegurar que el modal anterior se cierre completamente
       setTimeout(() => {
         // Continuar con la apertura del modal original usando el target guardado
         const modal = document.querySelector(modalTarget)
-        console.log('Buscando modal:', modalTarget, 'Encontrado:', modal)
         if (modal) {
-          console.log('Abriendo modal...')
           modal.classList.remove('hidden')
           this.updateCurrentUserField(modal)
 
