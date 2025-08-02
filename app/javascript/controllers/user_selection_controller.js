@@ -14,21 +14,56 @@ export default class extends Controller {
     this.updateHiddenFields()
   }
 
-  // Establece este participante como usuario actual
+  // Establece este participante como usuario actual o lo deselecciona si ya está seleccionado
   selectUser(event) {
     event.preventDefault()
     
-    // Guardar en localStorage
-    localStorage.setItem(this.storageKeyValue, this.participantNameValue)
+    const currentUser = localStorage.getItem(this.storageKeyValue)
     
-    // Actualizar todos los iconos
-    this.updateAllUserIcons(this.participantNameValue)
+    // Si el usuario ya está seleccionado, deseleccionarlo
+    if (currentUser === this.participantNameValue) {
+      this.clearCurrentUser()
+      this.showNotification(`${this.participantNameValue} ha sido deseleccionado`)
+    } else {
+      // Guardar en localStorage
+      localStorage.setItem(this.storageKeyValue, this.participantNameValue)
+      
+      // Actualizar todos los iconos
+      this.updateAllUserIcons(this.participantNameValue)
+      
+      // Actualizar campos ocultos
+      this.updateHiddenFields()
+      
+      // Mostrar notificación
+      this.showNotification(`${this.participantNameValue} ha sido establecido como usuario actual`)
+    }
+  }
+
+  // Limpia la selección del usuario actual
+  clearCurrentUser() {
+    localStorage.removeItem(this.storageKeyValue)
     
-    // Actualizar campos ocultos
-    this.updateHiddenFields()
+    // Actualizar todos los iconos al estado inactivo
+    this.updateAllUserIcons(null)
     
-    // Mostrar notificación
-    this.showNotification(`${this.participantNameValue} ha sido establecido como usuario actual`)
+    // Limpiar campos ocultos
+    this.clearHiddenFields()
+    
+    // Disparar evento personalizado para notificar a otros controladores
+    document.dispatchEvent(new CustomEvent('user-selection:cleared'))
+  }
+
+  // Limpia todos los campos ocultos
+  clearHiddenFields() {
+    // Limpiar campos ocultos en esta instancia del controlador
+    this.hiddenFieldTargets.forEach(field => {
+      field.value = ""
+    })
+    
+    // Limpiar todos los campos ocultos globales
+    document.querySelectorAll('[id^="current_user_name_"]').forEach(field => {
+      field.value = ""
+    })
   }
 
   // Carga el usuario actual desde localStorage
@@ -54,7 +89,7 @@ export default class extends Controller {
         const iconElement = controller.iconTarget.querySelector('i') // Cambié de svg a i para Nerd Fonts
         const iconName = controller.participantNameValue
         
-        if (iconName === currentUserName) {
+        if (currentUserName && iconName === currentUserName) {
           iconElement.style.color = this.activeColorValue
         } else {
           iconElement.style.color = this.inactiveColorValue
