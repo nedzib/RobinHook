@@ -33,6 +33,7 @@ class SamplingsController < ApplicationController
     end
 
     respond_to do |format|
+      format.turbo_stream { head :ok } # recibe el broadcast
       format.html do
         # Determinar si la solicitud viene de la vista pública
         is_public_view = params[:public_view] == "true"

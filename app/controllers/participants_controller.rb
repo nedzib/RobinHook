@@ -25,11 +25,17 @@ class ParticipantsController < ApplicationController
     end
 
     if params[:increment].present?
-      @participant.increment!(:count)
-      redirect_to redirect_url, notice: "Contador +1."
+      @participant.update!(count: @participant.count + 1)
+      respond_to do |format|
+        format.turbo_stream { head :ok } # recibe el broadcast
+        format.html { redirect_to redirect_url, notice: "Contador actualizado." }
+      end
     elsif params[:decrement].present? && @participant.count > 0
-      @participant.decrement!(:count)
-      redirect_to redirect_url, notice: "Contador -1."
+      @participant.update!(count: @participant.count - 1)
+      respond_to do |format|
+        format.turbo_stream { head :ok } # recibe el broadcast
+        format.html { redirect_to redirect_url, notice: "Contador actualizado." }
+      end
     elsif params[:available].present?
       # Actualizar disponibilidad
       available = params[:available] == "true"

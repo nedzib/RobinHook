@@ -1,0 +1,21 @@
+<span id="<%= participant.id %>_available">
+<% if participant.available %>
+  <span
+    class="
+    inline-flex items-center p-2 bg-green-100 text-green-800 text-xs font-medium
+    rounded-full
+    "
+    >
+    <i class="nf nf-fa-check h-3 w-3"></i>
+  </span>
+<% else %>
+  <span
+    class="
+    inline-flex items-center p-2 bg-red-100 text-red-800 text-xs font-medium
+    rounded-full
+    "
+    >
+    <i class="nf nf-fa-times h-3 w-3"></i>
+  </span>
+<% end %>
+</span>
