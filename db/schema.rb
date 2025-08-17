@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_30_161207) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_17_170342) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -36,6 +36,23 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_30_161207) do
     t.index ["user_id"], name: "index_rounds_on_user_id"
   end
 
+  create_table "solid_cable_messages", force: :cascade do |t|
+    t.string "channel", null: false
+    t.text "payload", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.index ["channel"], name: "index_solid_cable_messages_on_channel"
+  end
+
+  create_table "ssh_keys", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.text "public_key"
+    t.string "fingerprint"
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_ssh_keys_on_user_id"
+  end
+
   create_table "subgroups", force: :cascade do |t|
     t.string "name"
     t.bigint "round_id", null: false
@@ -59,5 +76,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_30_161207) do
   add_foreign_key "participants", "rounds"
   add_foreign_key "participants", "subgroups"
   add_foreign_key "rounds", "users"
+  add_foreign_key "ssh_keys", "users"
   add_foreign_key "subgroups", "rounds"
 end
