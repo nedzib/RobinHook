@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_17_170342) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_17_171155) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -40,7 +40,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_17_170342) do
     t.string "channel", null: false
     t.text "payload", null: false
     t.datetime "created_at", precision: nil, null: false
+    t.string "channel_hash", default: "", null: false
     t.index ["channel"], name: "index_solid_cable_messages_on_channel"
+    t.index ["channel_hash"], name: "index_solid_cable_messages_on_channel_hash"
+    t.index ["created_at"], name: "index_solid_cable_messages_on_created_at"
   end
 
   create_table "ssh_keys", force: :cascade do |t|

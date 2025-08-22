@@ -65,3 +65,7 @@ group :test do
 end
 
 gem "devise"
+
+gem "ruby-openai", "~> 8.2"
+
+gem "dotenv-rails", "~> 3.1", groups: [ :development, :test ]

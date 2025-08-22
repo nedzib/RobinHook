@@ -11,17 +11,34 @@ class SamplingsController < ApplicationController
       # Muestreo por equipo
       @sampler = RoundRobinSamplerService.new(@subgroup, current_user_name)
       @participant = @sampler.sample
-      source = "del equipo #{@subgroup.name}"
+      source = @subgroup.name.capitalize
     else
       # Muestreo global
       @sampler = GlobalRoundRobinSamplerService.new(@round, current_user_name)
       @participant = @sampler.sample
-      source = "global"
+      source = "Global"
     end
 
     if @participant
+      client = OpenAI::Client.new
+
+      begin
+      response = client.chat(
+        parameters: {
+         model: "gpt-4.1-nano", # Required.
+          messages: [
+            { role: "system", content: system_prompt },
+            { role: "user", content: "NAME: #{@participant.name}" }
+          ],
+          temperature: 0.7
+        }
+      ).dig("choices", 0, "message", "content")
+      rescue
+        response = "#{@participant.name} ha sido seleccionadx para revisar el PR: <url>"
+      end
+
       if params[:pr_url].present? && @round.web_hook.present?
-        message = "#{@participant.name} ha sido seleccionadx (#{source}) para revisar el PR: #{params[:pr_url]}"
+        message = "#{source} | #{response.gsub("<url>", params[:pr_url])}"
         notifier = WebhookNotificationService.new(@round.web_hook)
         notifier.send_notification(message)
         flash[:notice] = "#{@participant.name} ha sido seleccionado y se ha enviado la notificación."
@@ -57,5 +74,9 @@ class SamplingsController < ApplicationController
 
   def set_subgroup
     @subgroup = @round.subgroups.find(params[:subgroup_id])
+  end
+
+  def system_prompt
+    "Quiero que generes un mensaje corto, gracioso pero respetuoso, para notificar que una persona ha sido asignada a revisar un Pull Request. Reglas: - Siempre menciona el nombre de la persona al inicio (ejemplo: “Valen, …”). - Incluye al final la referencia al PR con 👉 <url>. - El tono debe ser divertido, creativo y ligero, nunca ofensivo. - No uses referencias a familiares ni localismos. - Puedes usar referencias de cultura pop global. - Varía los estilos: a veces frases neutras humorísticas, a veces referencias culturales. - No repitas siempre el mismo patrón de chiste. - El mensaje debe caber en una sola línea. - No inicies el chiste con “este PR” incorpora la existencia del PR en la frase"
   end
 end
