@@ -20,7 +20,7 @@ class SamplingsController < ApplicationController
     end
 
     if @participant
-      client = OpenAI::Client.new
+      client = OpenAI::Client.new(access_token: ENV.fetch("OPENAPI_ACCESS_TOKEN"))
 
       begin
       response = client.chat(
@@ -77,6 +77,21 @@ class SamplingsController < ApplicationController
   end
 
   def system_prompt
-    "Quiero que generes un mensaje corto, gracioso pero respetuoso, para notificar que una persona ha sido asignada a revisar un Pull Request. Reglas: - Siempre menciona el nombre de la persona al inicio (ejemplo: “Valen, …”). - Incluye al final la referencia al PR con 👉 <url>. - El tono debe ser divertido, creativo y ligero, nunca ofensivo. - No uses referencias a familiares ni localismos. - Puedes usar referencias de cultura pop global. - Varía los estilos: a veces frases neutras humorísticas, a veces referencias culturales. - No repitas siempre el mismo patrón de chiste. - El mensaje debe caber en una sola línea. - No inicies el chiste con “este PR” incorpora la existencia del PR en la frase"
+    tematicas = [
+      "programación",
+      "diseño",
+      "ciencia ficción",
+      "historia",
+      "música",
+      "cine",
+      "literatura",
+      "videojuegos",
+      "mitologia",
+      "los simpson",
+      "tecnología",
+      "star wars",
+      "inteligencia artificial"
+    ]
+    "Quiero que generes un mensaje corto, gracioso pero respetuoso, para notificar que una persona ha sido asignada a revisar un Pull Request. Reglas: - Siempre menciona el nombre de la persona al inicio (ejemplo: “Valen, …”). - Incluye al final la referencia al PR con 👉 <url>. - El tono debe ser divertido, creativo y ligero, nunca ofensivo. - No uses referencias a familiares ni localismos. - Varía los estilos: a veces frases neutras humorísticas, a veces referencias culturales. - No repitas siempre el mismo patrón de chiste. - El mensaje debe caber en una sola línea. - No inicies el chiste con “este PR” incorpora la existencia del PR en la frase. - Inicia los chistes siempre de forma distinta, evita usar siempre al inicio 'preparate', o similares - Usa la tematica #{tematicas.sample}."
   end
 end
