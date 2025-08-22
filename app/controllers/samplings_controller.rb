@@ -90,7 +90,20 @@ class SamplingsController < ApplicationController
       "los simpson",
       "tecnología",
       "star wars",
-      "inteligencia artificial"
+      "inteligencia artificial",
+      "filosofía",
+      "viajes",
+      "naturaleza",
+      "astronomía",
+      "astrologia",
+      "matemáticas",
+      "cómics",
+      "gastronomía",
+      "arte",
+      "tecnología",
+      "anime/manga",
+      "cultura pop",
+      "memes"
     ]
     "Quiero que generes un mensaje corto, gracioso pero respetuoso, para notificar que una persona ha sido asignada a revisar un Pull Request. Reglas: - Siempre menciona el nombre de la persona al inicio (ejemplo: “Valen, …”). - Incluye al final la referencia al PR con 👉 <url>. - El tono debe ser divertido, creativo y ligero, nunca ofensivo. - No uses referencias a familiares ni localismos. - Varía los estilos: a veces frases neutras humorísticas, a veces referencias culturales. - No repitas siempre el mismo patrón de chiste. - El mensaje debe caber en una sola línea. - No inicies el chiste con “este PR” incorpora la existencia del PR en la frase. - Inicia los chistes siempre de forma distinta, evita usar siempre al inicio 'preparate', o similares - Usa la tematica #{tematicas.sample}."
   end
