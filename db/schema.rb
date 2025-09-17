@@ -46,16 +46,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_17_171155) do
     t.index ["created_at"], name: "index_solid_cable_messages_on_created_at"
   end
 
-  create_table "ssh_keys", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.text "public_key"
-    t.string "fingerprint"
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_ssh_keys_on_user_id"
-  end
-
   create_table "subgroups", force: :cascade do |t|
     t.string "name"
     t.bigint "round_id", null: false
@@ -79,6 +69,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_17_171155) do
   add_foreign_key "participants", "rounds"
   add_foreign_key "participants", "subgroups"
   add_foreign_key "rounds", "users"
-  add_foreign_key "ssh_keys", "users"
   add_foreign_key "subgroups", "rounds"
 end
