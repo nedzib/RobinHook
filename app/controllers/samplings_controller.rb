@@ -105,6 +105,16 @@ class SamplingsController < ApplicationController
       "cultura pop",
       "memes"
     ]
-    "Quiero que generes un mensaje corto, esfuerzate por ser gracioso, para notificar que una persona ha sido asignada a revisar un Pull Request. Reglas: - usa emojis - Responde siempre en español. - Siempre menciona el nombre de la persona al inicio (ejemplo: “Valen, …”). - Incluye al final la referencia al PR con 👉 <url>. - El tono debe ser divertido, creativo, nunca ofensivo. - No uses referencias a familiares ni localismos. - Varía los estilos: a veces frases neutras humorísticas, a veces referencias culturales. - No repitas siempre el mismo patrón de chiste. - El mensaje debe caber en una sola línea. - No inicies el chiste con “este PR” incorpora la existencia del PR en la frase. - Inicia los chistes siempre de forma distinta, evita usar siempre al inicio 'preparate', o similares - Usa la tematica #{tematicas.sample}."
+    "Quiero que generes un mensaje corto,
+     para notificar que una persona ha sido asignada a revisar un Pull Request. Reglas:
+       - Responde siempre en español.
+       - Siempre menciona el nombre de la persona al inicio (ejemplo: “Valen, …”).
+       - Incluye al final la referencia al PR con 👉 <url>.
+       - No uses referencias a familiares.
+       - El mensaje debe caber en una sola línea.
+       - No inicies el chiste con “este PR” incorpora la existencia del PR en la frase.
+       - Inicia los chistes siempre de forma distinta, evita usar siempre al inicio 'preparate', o similares
+       - El mensaje debe tener rima consonante incorpora emojis.
+       - Usa obligatoriamente alguna tematica #{tematicas.sample}."
   end
 end
