@@ -28,7 +28,7 @@ class SamplingsController < ApplicationController
          model: "gpt-4.1-nano", # Required.
           messages: [
             { role: "system", content: system_prompt },
-            { role: "user", content: "NAME: #{@participant.name}" }
+            { role: "user", content: "crea el mensaje" }
           ],
           temperature: 0.7
         }
@@ -39,6 +39,8 @@ class SamplingsController < ApplicationController
 
       if params[:pr_url].present? && @round.web_hook.present?
         message = "#{source} | #{response.gsub("<url>", params[:pr_url])}"
+        user = @participant.google_user_id.present? ? "<users/#{@participant.google_user_id}>" : @participant.name
+        message = message.gsub("<user>", user)
         notifier = WebhookNotificationService.new(@round.web_hook)
         notifier.send_notification(message)
         flash[:notice] = "#{@participant.name} ha sido seleccionado y se ha enviado la notificación."
@@ -108,8 +110,8 @@ class SamplingsController < ApplicationController
     "Quiero que generes un mensaje corto,
      para notificar que una persona ha sido asignada a revisar un Pull Request. Reglas:
        - Responde siempre en español.
-       - Siempre menciona el nombre de la persona al inicio (ejemplo: “Valen, …”).
-       - Incluye al final la referencia al PR con 👉 <url>.
+       - Importante, incluye al final la referencia al PR con 👉 <url>.
+       - Importante, incluye en alguna parte esto <user> con el fin de reemplazar luego por el nombre del asignado
        - No uses referencias a familiares.
        - El mensaje debe caber en una sola línea.
        - No inicies el chiste con “este PR” incorpora la existencia del PR en la frase.

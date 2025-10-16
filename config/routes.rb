@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   get "rounds/public", to: "round#public_show"
 
   resources :rounds, controller: "round" do
-    resources :participants, only: [ :create, :destroy, :update ]
+    resources :participants, only: [ :create, :destroy, :update, :edit ]
     resources :subgroups, only: [ :create, :destroy ] do
       resources :samplings, only: [ :create ]
     end

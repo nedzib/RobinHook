@@ -1,0 +1,22 @@
+<div class="container mx-auto p-4">
+  <h2 class="text-2xl font-semibold mb-4">Editar Participante</h2>
+
+  <%= form_with(model: [@round, @participant], local: true, class: "space-y-4") do |f| %>
+    <div class="flex flex-col space-y-2">
+      <div>
+        <%= f.label :name, "Nombre", class: "block text-sm font-medium text-gray-700" %>
+        <%= f.text_field :name, class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" %>
+      </div>
+
+      <div>
+        <%= f.label :google_user_id, "Google User ID", class: "block text-sm font-medium text-gray-700" %>
+        <%= f.text_field :google_user_id, class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" %>
+      </div>
+    </div>
+
+    <div class="flex items-center space-x-4">
+      <%= f.submit "Actualizar", class: "px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50" %>
+      <%= link_to "Cancelar", round_path(@round), class: "px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50" %>
+    </div>
+  <% end %>
+</div>

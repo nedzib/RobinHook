@@ -1,7 +1,11 @@
 class ParticipantsController < ApplicationController
   skip_before_action :authenticate_user!, only: [ :update ]
   before_action :set_round
-  before_action :set_participant, only: [ :update, :destroy ]
+  before_action :set_participant, only: [ :update, :destroy, :edit ]
+
+  def edit
+    # La vista `edit.html.erb` será renderizada
+  end
 
   def create
     @participant = @round.participants.new(participant_params)
@@ -24,7 +28,13 @@ class ParticipantsController < ApplicationController
       round_path(@round)
     end
 
-    if params[:increment].present?
+    if params[:participant].present?
+      if @participant.update(participant_params)
+        redirect_to round_path(@round), notice: "Participante actualizado exitosamente."
+      else
+        render :edit
+      end
+    elsif params[:increment].present?
       @participant.update!(count: @participant.count + 1)
       respond_to do |format|
         format.turbo_stream { head :ok } # recibe el broadcast
@@ -80,12 +90,22 @@ class ParticipantsController < ApplicationController
   private
 
   def set_round
-    @round = Round.find(params[:round_id])
+    if params[:round_id]
+      @round = Round.find(params[:round_id])
+    elsif params[:id]
+      @participant = Participant.find(params[:id])
+      @round = @participant.round if @participant
+    end
+
+    unless @round
+      # Manejar el caso en que la ronda no se encuentra
+      redirect_to rounds_path, alert: "Ronda no encontrada."
+    end
   end
 
   def set_participant
     # Buscar el participante tanto en la ronda principal como en los subgrupos
-    @participant = Participant.where(id: params[:id]).where("round_id = ? OR subgroup_id IN (?)", @round.id, @round.subgroups.pluck(:id)).first
+    @participant = Participant.find_by(id: params[:id])
 
     unless @participant
       redirect_to round_path(@round), alert: "Participante no encontrado."
@@ -93,7 +113,7 @@ class ParticipantsController < ApplicationController
   end
 
   def participant_params
-    params.require(:participant).permit(:name, :available)
+    params.require(:participant).permit(:name, :available, :google_user_id)
   end
 
   # Ajusta el conteo de un participante cuando vuelve a estar disponible
