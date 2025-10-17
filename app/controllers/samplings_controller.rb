@@ -40,7 +40,7 @@ class SamplingsController < ApplicationController
       if params[:pr_url].present? && @round.web_hook.present?
         message = "#{source} | #{response.gsub("<url>", params[:pr_url])}"
         user = @participant.google_user_id.present? ? "<users/#{@participant.google_user_id}>" : @participant.name
-        message = message.gsub("<user>", user)
+        message = message.gsub("<user>", @participant.name)
         notifier = WebhookNotificationService.new(@round.web_hook)
         notifier.send_notification(message)
         flash[:notice] = "#{@participant.name} ha sido seleccionado y se ha enviado la notificación."
