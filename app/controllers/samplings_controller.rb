@@ -41,6 +41,7 @@ class SamplingsController < ApplicationController
         message = "#{source} | #{response.gsub("<url>", params[:pr_url])}"
         user = @participant.google_user_id.present? ? "<users/#{@participant.google_user_id}>" : @participant.name
         message = message.gsub("<user>", @participant.name)
+        Rails.logger.info("Enviando notificación al webhook: #{message} usuario <users/#{@participant.google_user_id}>")
         notifier = WebhookNotificationService.new(@round.web_hook)
         notifier.send_notification(message)
         flash[:notice] = "#{@participant.name} ha sido seleccionado y se ha enviado la notificación."
