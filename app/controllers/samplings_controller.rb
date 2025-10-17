@@ -39,8 +39,8 @@ class SamplingsController < ApplicationController
 
       if params[:pr_url].present? && @round.web_hook.present?
         message = "#{source} | #{response.gsub("<url>", params[:pr_url])}"
-        user = @participant.google_user_id.present? ? "<users/#{@participant.google_user_id}>" : @participant.name
-        message = message.gsub("<user>", @participant.name)
+        user = "#{@participant.name} <users/#{@participant.google_user_id}>"
+        message = message.gsub("<user>", user)
         Rails.logger.info("Enviando notificación al webhook: #{message} usuario <users/#{@participant.google_user_id}>")
         notifier = WebhookNotificationService.new(@round.web_hook)
         notifier.send_notification(message)
