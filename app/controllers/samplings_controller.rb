@@ -38,12 +38,9 @@ class SamplingsController < ApplicationController
       end
 
       if params[:pr_url].present? && @round.web_hook.present?
-        message = "#{source} | #{response.gsub("<url>", params[:pr_url])}"
-        user = "#{@participant.name} <users/#{@participant.google_user_id}>"
-        message = message.gsub("<user>", user)
-        Rails.logger.info("Enviando notificación al webhook: #{message} usuario <users/#{@participant.google_user_id}>")
+        message = response.gsub("<user>", @participant.name)
         notifier = WebhookNotificationService.new(@round.web_hook)
-        notifier.send_notification(message)
+        notifier.send_notification(message, source, params[:pr_url])
         flash[:notice] = "#{@participant.name} ha sido seleccionado y se ha enviado la notificación."
       else
         flash[:notice] = "#{@participant.name} ha sido seleccionado."
@@ -79,45 +76,25 @@ class SamplingsController < ApplicationController
     @subgroup = @round.subgroups.find(params[:subgroup_id])
   end
 
+
   def system_prompt
     tematicas = [
-      "programación",
-      "diseño",
-      "ciencia ficción",
-      "historia",
-      "música",
-      "cine",
-      "literatura",
-      "videojuegos",
-      "mitologia",
-      "los simpson",
-      "tecnología",
-      "star wars",
-      "inteligencia artificial",
-      "filosofía",
-      "viajes",
-      "naturaleza",
-      "astronomía",
-      "astrologia",
-      "matemáticas",
-      "cómics",
-      "gastronomía",
-      "arte",
-      "tecnología",
-      "anime/manga",
-      "cultura pop",
-      "memes"
+      "programación", "diseño", "ciencia ficción", "historia", "música", "cine",
+      "literatura", "videojuegos", "mitología", "Los Simpson", "tecnología",
+      "Star Wars", "inteligencia artificial", "filosofía", "viajes", "naturaleza",
+      "astronomía", "astrología", "matemáticas", "cómics", "gastronomía",
+      "arte", "anime/manga", "cultura pop", "memes"
     ]
-    "Quiero que generes un mensaje corto,
-     para notificar que una persona ha sido asignada a revisar un Pull Request. Reglas:
-       - Responde siempre en español.
-       - Importante, incluye al final la referencia al PR con 👉 <url>.
-       - Importante, incluye en alguna parte esto <user> con el fin de reemplazar luego por el nombre del asignado
-       - No uses referencias a familiares.
-       - El mensaje debe caber en una sola línea.
-       - No inicies el chiste con “este PR” incorpora la existencia del PR en la frase.
-       - Inicia los chistes siempre de forma distinta, evita usar siempre al inicio 'preparate', o similares
-       - El mensaje debe tener rima consonante incorpora emojis.
-       - Usa obligatoriamente alguna tematica #{tematicas.sample}."
+
+    "Genera una frase corta, ingeniosa y graciosa para notificar que una persona ha sido asignada a revisar un Pull Request.
+    Reglas:
+    - Escribe siempre en español.
+    - Incluye exactamente una vez el texto <user> (luego se reemplazará por el nombre del asignado).
+    - No menciones familiares ni relaciones personales.
+    - Debe caber en una sola línea.
+    - No empieces con 'Este PR' ni con frases genéricas como 'Prepárate'.
+    - Incorpora uno o dos emojis relevantes.
+    - Inspírate en la temática: #{tematicas.sample}.
+    - Mantén un tono humorístico, ágil y diferente en cada frase (sin repetición de estructuras)."
   end
 end
