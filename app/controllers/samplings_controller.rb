@@ -34,11 +34,11 @@ class SamplingsController < ApplicationController
         }
       ).dig("choices", 0, "message", "content")
       rescue
-        response = "#{@participant.name} ha sido seleccionadx para revisar el PR: <url>"
+        response = "#{@participant.name}! ha sido seleccionadx para revisar el PR: <url>"
       end
 
       if params[:pr_url].present? && @round.web_hook.present?
-        message = response.gsub("<user>", @participant.name)
+        message = response.gsub("<user>", @participant.name+"!")
         notifier = WebhookNotificationService.new(@round.web_hook)
         notifier.send_notification(message, source, params[:pr_url])
         flash[:notice] = "#{@participant.name} ha sido seleccionado y se ha enviado la notificación."
