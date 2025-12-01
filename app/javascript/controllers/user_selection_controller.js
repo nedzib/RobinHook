@@ -82,18 +82,41 @@ export default class extends Controller {
       "user-selection"
     )
     
-    // Método alternativo: buscar por clase CSS
+    // Método alternativo: buscar por clase CSS y aplicar halo al contenedor
     document.querySelectorAll('[data-controller*="user-selection"]').forEach(element => {
       const controller = this.application.getControllerForElementAndIdentifier(element, "user-selection")
-      if (controller && controller.hasIconTarget) {
-        const iconElement = controller.iconTarget.querySelector('i') // Cambié de svg a i para Nerd Fonts
-        const iconName = controller.participantNameValue
-        
-        if (currentUserName && iconName === currentUserName) {
-          iconElement.style.color = this.activeColorValue
+      if (!controller) return
+
+      const iconName = controller.participantNameValue
+
+      // Preferir target de icono si existe
+      let targetEl = null
+      if (controller.hasIconTarget) {
+        targetEl = controller.iconTarget
+      } else {
+        targetEl = controller.element
+      }
+
+      // Si dentro del target hay un <i> (nerd-fonts icon), colorearlo; si no, aplicar/unapply halo en el contenedor
+      const innerIcon = targetEl.querySelector && targetEl.querySelector('i')
+
+      const checkEl = targetEl.querySelector && targetEl.querySelector('.selected-check')
+
+      if (currentUserName && iconName === currentUserName) {
+        if (innerIcon) {
+          innerIcon.style.color = this.activeColorValue
         } else {
-          iconElement.style.color = this.inactiveColorValue
+          // añadir clase dedicada para halo
+          targetEl.classList.add('selected-user-ring')
         }
+        if (checkEl) checkEl.classList.remove('hidden')
+      } else {
+        if (innerIcon) {
+          innerIcon.style.color = this.inactiveColorValue
+        } else {
+          targetEl.classList.remove('selected-user-ring')
+        }
+        if (checkEl) checkEl.classList.add('hidden')
       }
     })
   }

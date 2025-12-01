@@ -1,1 +1,8 @@
 @import "tailwindcss";
+
+/* Custom component utilities: fallback CSS for selected-user halo */
+.selected-user-ring {
+	/* subtle blue halo */
+	box-shadow: 0 0 0 6px rgba(59,130,246,0.18);
+	transition: box-shadow 150ms ease-in-out, transform 150ms ease-in-out;
+}

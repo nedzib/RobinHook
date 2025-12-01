@@ -69,3 +69,6 @@ gem "devise"
 gem "ruby-openai", "~> 8.2"
 
 gem "dotenv-rails", "~> 3.1", groups: [ :development, :test ]
+
+# ViewComponent for building small, testable view components
+gem "view_component"

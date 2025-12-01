@@ -16,13 +16,13 @@
             data-action="click->modal-manager#open"
             data-modal-target="#globalSamplingModal"
             class="
-              px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700
-              focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50
-              inline-flex items-center
+              px-5 py-3 bg-purple-600 text-white rounded-full hover:bg-purple-700
+              focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50
+              inline-flex items-center space-x-2
             "
           >
-            <i class="nf nf-cod-wand mr-2"></i>
-            Muestreo Global
+            <i class="nf nf-cod-wand"></i>
+            <span class="font-medium">Muestreo Global</span>
           </button>
 
           <% unless @public_view %>
@@ -54,12 +54,12 @@
       </div>
     </div>
     <!-- Sección de subgrupos -->
-    <div class="border-t border-gray-200 pt-6 mb-8">
+    <div class="border-gray-200 pt-6 mb-8">
       <div class="flex justify-between items-center mb-4 flex-col">
         <% unless @public_view %>
           <div data-controller="form-toggle" class='w-full'>
             <div class="flex flex-row justify-between w-full items-center">
-              <h3 class="text-xl font-semibold">Equipos</h3>
+              <h3 class="text-xl font-semibold">subgrupos</h3>
               <div data-form-toggle-target="button">
                 <button
                   data-action="click->form-toggle#toggle"
@@ -70,14 +70,14 @@
                   "
                 >
                   <i class="nf nf-fa-plus mr-2"></i>
-                  Agregar equipo
+                  Agregar subgrupo
                 </button>
               </div>
             </div>
             <!-- Formulario para agregar subgrupo (inicialmente oculto) -->
             <div data-form-toggle-target="form">
               <div class="bg-gray-50 p-4 rounded-md mb-6 mt-4">
-                <h4 class="text-lg font-medium mb-3">Agregar nuevo equipo</h4>
+                <h4 class="text-lg font-medium mb-3">Agregar nuevo subgrupo</h4>
                 <form
                   action="<%= round_subgroups_path(@round) %>"
                   method="post"
@@ -95,7 +95,7 @@
                           block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500
                           focus:ring focus:ring-blue-500 focus:ring-opacity-50
                         "
-                        placeholder="Nombre del equipo"
+                        placeholder="Nombre del subgrupo"
                         required
                       >
                     </div>
@@ -150,9 +150,9 @@
                     </button>
 
                     <% unless @public_view %>
-                      <!-- Botón para eliminar el equipo (solo en vista
+                      <!-- Botón para eliminar el subgrupo (solo en vista
                       privada) -->
-                      <%= button_to round_subgroup_path(@round, subgroup), method: :delete, data: { turbo_confirm: "¿Estás seguro de que deseas eliminar este equipo?" }, class: "text-red-600 hover:text-red-900 bg-transparent border-0 cursor-pointer" do %>
+                      <%= button_to round_subgroup_path(@round, subgroup), method: :delete, data: { turbo_confirm: "¿Estás seguro de que deseas eliminar este subgrupo?" }, class: "text-red-600 hover:text-red-900 bg-transparent border-0 cursor-pointer" do %>
                         <i class="nf nf-fa-trash text-sm"></i>
                       <% end %>
                     <% end %>
@@ -161,82 +161,22 @@
 
                 <% participants = Participant.where(subgroup_id: subgroup.id) %>
                 <% if participants.any? %>
-                  <ul class="divide-y divide-gray-200">
+                  <div class="flex flex-wrap -m-3">
                     <% participants.sort_by(&:name).each do |participant| %>
-                      <li class="py-2 flex justify-between items-center">
-                        <div class="flex items-center">
-                          <%= button_to round_participant_path(@round, participant, available: !participant.available, public_view: @public_view.to_s), method: :patch, class: "mr-2" do %>
-                            <%= render partial: "available", locals: { participant: participant } %>
-                          <% end %>
-                          <div
-                            data-controller="user-selection"
-                            data-user-selection-participant-name-value="<%= participant.name %>"
-                            class="flex items-center"
-                          >
-                            <span
-                              data-user-selection-target="icon"
-                              data-action="click->user-selection#selectUser"
-                              class="
-                                cursor-pointer mr-1 inline-flex items-center justify-center
-                              "
-                            >
-                              <i class="nf nf-fa-user h-5 w-5" style="color: #9ca3af;"></i>
-                            </span>
-                            <span class="text-gray-900" data-participant-id="<%= participant.id %>"><%= participant.name %></span>
-                          </div>
-                        </div>
-                        <div class="flex items-center ml-6 space-x-1">
-                          <%= button_to round_participant_path(@round, participant, decrement: true, public_view: @public_view.to_s), method: :patch, class: "text-blue-600 hover:text-blue-900 bg-transparent border-0 cursor-pointer" do %>
-                            <i class="nf nf-fa-minus h-4 w-4"></i>
-                          <% end %>
-                          <span class="px-2 py-1 bg-gray-100 rounded-md text-xs font-medium">
-                            <%= render partial: "count", locals: { participant: participant } %>
-                          </span>
-                          <%= button_to round_participant_path(@round, participant, increment: true, public_view: @public_view.to_s), method: :patch, class: "text-blue-600 hover:text-blue-900 bg-transparent border-0 cursor-pointer" do %>
-                            <i class="nf nf-fa-plus h-4 w-4"></i>
-                          <% end %>
-                        </div>
-                        <% unless @public_view %>
-                          <div class="flex items-center space-x-2">
-                            <form
-                              action="<%= round_participant_path(@round, participant) %>"
-                              method="post"
-                              class="inline"
-                            >
-                              <input type="hidden" name="_method" value="patch">
-                              <input
-                                type="hidden"
-                                name="authenticity_token"
-                                value="<%= form_authenticity_token %>"
-                              >
-                              <input type="hidden" name="subgroup_id" value="0">
-                              <button
-                                type="submit"
-                                class="
-                                  text-blue-600 hover:text-blue-900 bg-transparent border-0 cursor-pointer text-xs
-                                  inline-flex items-center
-                                "
-                              >
-                                <i class="nf nf-fa-sign_out text-base ml-4"></i>
-                              </button>
-                            </form>
-                          </div>
-                        <% end %>
-                      </li>
+                      <%= render ParticipantCardComponent.new(participant: participant, round: @round, public_view: @public_view) %>
                     <% end %>
-                  </ul>
+                  </div>
                 <% else %>
-                  <p class="text-gray-500 text-sm">No hay participantes en este equipo.</p>
+                  <p class="text-gray-500 text-sm">No hay participantes en este subgrupo.</p>
                 <% end %>
               </div>
             <% end %>
           </div>
         <% else %>
-          <p class="text-gray-500">No hay equipos disponibles.</p>
         <% end %>
       </div>
 
-      <div class="border-t border-gray-200 pt-6">
+      <div class="border-gray-200 pt-6">
         <div class="flex justify-between mb-4 flex-col">
           <% unless @public_view %>
             <div data-controller="form-toggle">
@@ -303,164 +243,23 @@
                   <% end %>
                 </div>
               </div>
-            </div>
+            </div> 
           <% end %>
           <% if @round.participants.any? %>
-            <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                  <tr>
-                    <th
-                      scope="col"
-                      class="
-                        px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider
-                      "
-                    >Disponibilidad</th>
-                    <th
-                      scope="col"
-                      class="
-                        px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider
-                      "
-                    >Nombre</th>
-                    <th
-                      scope="col"
-                      class="
-                        px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider
-                      "
-                    >Conteo</th>
-                    <% unless @public_view %>
-                      <th
-                        scope="col"
-                        class="
-                          px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider
-                        "
-                      >ID de Google</th>
-                      <th
-                        scope="col"
-                        class="
-                          px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider
-                        "
-                      >Acciones</th>
-                    <% end %>
-                  </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                  <% @round.participants.each do |participant| %>
-                    <tr>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        <%= button_to round_participant_path(@round, participant, available: !participant.available, public_view: @public_view.to_s), method: :patch do %>
-                          <%= render partial: "available", locals: { participant: participant } %>
-                        <% end %>
-                      </td>
-                      <td
-                        class="
-                          px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900
-                        "
-                        data-participant-id="<%= participant.id %>"
-                      >
-                        <div
-                          data-controller="user-selection"
-                          data-user-selection-participant-name-value="<%= participant.name %>"
-                          class="flex items-center"
-                        >
-                          <span
-                            data-user-selection-target="icon"
-                            data-action="click->user-selection#selectUser"
-                            class="
-                              cursor-pointer mr-2 inline-flex items-center justify-center
-                            "
-                          >
-                            <i class="nf nf-fa-user h-5 w-5" style="color: #9ca3af;"></i>
-                          </span>
-                          <span><%= participant.name %></span>
-                        </div>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <div class="flex items-center space-x-2">
-                          <%= button_to round_participant_path(@round, participant, decrement: true, public_view: @public_view.to_s), method: :patch, class: "text-blue-600 hover:text-blue-900 bg-transparent border-0 cursor-pointer" do %>
-                            <i class="nf nf-fa-minus h-5 w-5"></i>
-                          <% end %>
-                          <span class="px-3 py-1 bg-gray-100 rounded-md font-medium">
-                            <%= render partial: "count", locals: { participant: participant } %>
-                          </span>
-                          <%= button_to round_participant_path(@round, participant, increment: true, public_view: @public_view.to_s), method: :patch, class: "text-blue-600 hover:text-blue-900 bg-transparent border-0 cursor-pointer" do %>
-                            <i class="nf nf-fa-plus h-5 w-5"></i>
-                          <% end %>
-                        </div>
-                      </td>
-                      <% unless @public_view %>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          <%= participant.google_user_id %>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <div class="flex items-center space-x-2">
-                            <% if @round.subgroups.any? %>
-                              <div class="inline-block relative">
-                                <div class="flex items-center">
-                                  <i
-                                    class="
-                                      nf nf-fa-user_pen h-5 w-5 text-gray-500 absolute left-2 pointer-events-none
-                                    "
-                                  ></i>
-                                  <select
-                                    id="subgroupSelect<%= participant.id %>"
-                                    class="
-                                      rounded-md border border-gray-300 shadow-sm pl-8 pr-3 py-1 bg-white text-sm
-                                      font-medium text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500
-                                      appearance-none
-                                    "
-                                    onchange="moveToSubgroup(this, <%= participant.id %>, <%= @round.id %>)"
-                                  >
-                                    <option value="">Mover</option>
-                                    <% @round.subgroups.each do |subgroup| %>
-                                      <option value="<%= subgroup.id %>"><%= subgroup.name %></option>
-                                    <% end %>
-                                  </select>
-                                  <div
-                                    class="
-                                      pointer-events-none absolute inset-y-0 right-0 flex items-center px-2
-                                      text-gray-700
-                                    "
-                                  >
-                                    <i class="nf nf-fa-chevron-down h-4 w-4"></i>
-                                  </div>
-                                </div>
-
-                                <form
-                                  id="moveForm<%= participant.id %>"
-                                  action="<%= round_participant_path(@round, participant) %>"
-                                  method="post"
-                                  style="display: none;"
-                                >
-                                  <input type="hidden" name="_method" value="patch">
-                                  <input
-                                    type="hidden"
-                                    name="authenticity_token"
-                                    value="<%= form_authenticity_token %>"
-                                  >
-                                  <input
-                                    type="hidden"
-                                    id="subgroup_id<%= participant.id %>"
-                                    name="subgroup_id"
-                                    value=""
-                                  >
-                                </form>
-                              </div>
-                            <% end %>
-                            <%= link_to edit_round_participant_path(@round, participant), class: "text-blue-600 hover:text-blue-900 bg-transparent border-0 cursor-pointer inline-flex items-center mr-2" do %>
-                              <i class="nf nf-fa-edit h-5 w-5 mr-1"></i>
-                            <% end %>
-                            <%= button_to round_participant_path(@round, participant), method: :delete, data: { turbo_confirm: "¿Estás seguro de que deseas eliminar este participante?" }, class: "text-red-600 hover:text-red-900 bg-transparent border-0 cursor-pointer inline-flex items-center" do %>
-                              <i class="nf nf-fa-trash h-5 w-5 mr-1"></i>
-                            <% end %>
-                          </div>
-                        </td>
-                      <% end %>
-                    </tr>
+            <%# Participants without subgroup: render as cards like subgroup participants %>
+            <% ungrouped = @round.participants.select { |p| p.subgroup_id.nil? || p.subgroup_id.to_i == 0 } %>
+            <% if ungrouped.any? %>
+              <div class="mb-6">
+                <h4 class="text-lg font-semibold mb-3">Participantes sin subgrupo</h4>
+                <div class="flex flex-wrap -m-3">
+                  <% ungrouped.sort_by(&:name).each do |participant| %>
+                    <%= render ParticipantCardComponent.new(participant: participant, round: @round, public_view: @public_view) %>
                   <% end %>
-                </tbody>
-              </table>
-            </div>
+                </div>
+              </div>
+            <% end %>
+
+            <!-- Participants table removed: cards are used for participant display -->
           <% else %>
             <p class="text-gray-500">No hay participantes en esta ronda.</p>
           <% end %>
@@ -500,7 +299,7 @@
               <h3 class="text-lg leading-6 font-medium text-gray-900">Seleccionar participante</h3>
               <div class="mt-2 px-7 py-3">
                 <p class="text-sm text-gray-500">
-                  Se seleccionará aleatoriamente un participante del equipo
+                  Se seleccionará aleatoriamente un participante del subgrupo
                   <strong><%= subgroup.name %></strong>
                   con el menor conteo.
                 </p>
@@ -561,7 +360,7 @@
             <div class="mt-2 px-7 py-3">
               <p class="text-sm text-gray-500">
                 Se seleccionará aleatoriamente un participante de todos los
-                equipos con el menor conteo.
+                subgrupos con el menor conteo.
               </p>
 
               <%= form_with(url: round_global_samplings_path(@round), method: :post, data: { remote: true, controller: "sampling" }, class: "mt-4") do |f| %>
