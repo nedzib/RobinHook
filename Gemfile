@@ -67,6 +67,7 @@ end
 gem "devise"
 
 gem "ruby-openai", "~> 8.2"
+gem "rubohash", github: "nedzib/rubohash"
 
 gem "dotenv-rails", "~> 3.1", groups: [ :development, :test ]
 

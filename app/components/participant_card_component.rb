@@ -1,3 +1,5 @@
+require "base64"
+
 class ParticipantCardComponent < ViewComponent::Base
   def initialize(participant:, round:, public_view: false)
     @participant = participant
@@ -8,19 +10,21 @@ class ParticipantCardComponent < ViewComponent::Base
   private
 
   def avatar_url
-    if defined?(Faker) && Faker.respond_to?(:Avatar)
-      begin
-        Faker::Avatar.image(slug: @participant.name, size: "80x80")
-      rescue StandardError
-        robohash_url
-      end
-    else
-      robohash_url
-    end
+    @avatar_url ||= rubohash_avatar_url
   end
 
-  def robohash_url
-    "https://robohash.org/#{ERB::Util.url_encode(@participant.name)}.png?size=80x80"
+  def rubohash_avatar_url
+    avatar_key = participant_seed.parameterize.presence || "participant"
+    image = Rubohash.assemble!(avatar_key)
+
+    "data:image/png;base64,#{Base64.strict_encode64(image.to_blob)}"
+  end
+
+  def participant_seed
+    return participant.name.to_s unless participant.respond_to?(:id)
+    return participant.name.to_s if participant.id.blank?
+
+    "#{participant.id}-#{participant.name}"
   end
 
   attr_reader :participant, :round, :public_view
