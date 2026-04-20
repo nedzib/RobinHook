@@ -1,53 +1,12 @@
 class SamplingsController < ApplicationController
-  skip_before_action :authenticate_user!, only: [ :create ]
-  before_action :set_round
+  skip_before_action :authenticate_user!, only: [ :create, :public_create ]
+  before_action :set_round, only: [ :create ]
   before_action :set_subgroup, only: [ :create ], if: -> { params[:subgroup_id].present? }
 
   def create
-    # Obtener el nombre del usuario actual desde el parámetro
     current_user_name = params[:current_user_name]
-
-    if @subgroup
-      # Muestreo por equipo
-      @sampler = RoundRobinSamplerService.new(@subgroup, current_user_name)
-      @participant = @sampler.sample
-      source = @subgroup.name.capitalize
-    else
-      # Muestreo global
-      @sampler = GlobalRoundRobinSamplerService.new(@round, current_user_name)
-      @participant = @sampler.sample
-      source = "Global"
-    end
-
-    if @participant
-      client = OpenAI::Client.new(access_token: ENV.fetch("OPENAPI_ACCESS_TOKEN"))
-
-      begin
-      response = client.chat(
-        parameters: {
-         model: "gpt-4.1-nano", # Required.
-          messages: [
-            { role: "system", content: system_prompt },
-            { role: "user", content: "crea el mensaje" }
-          ],
-          temperature: 0.7
-        }
-      ).dig("choices", 0, "message", "content")
-      rescue
-        response = "#{@participant.name}! ha sido seleccionadx para revisar el PR: <url>"
-      end
-
-      if params[:pr_url].present? && @round.web_hook.present?
-        message = response.gsub("<user>", @participant.name+"!")
-        notifier = WebhookNotificationService.new(@round.web_hook)
-        notifier.send_notification(message, source, params[:pr_url])
-        flash[:notice] = "#{@participant.name} ha sido seleccionado y se ha enviado la notificación."
-      else
-        flash[:notice] = "#{@participant.name} ha sido seleccionado."
-      end
-    else
-      flash[:alert] = "No hay participantes disponibles."
-    end
+    @participant, source = sample_participant(current_user_name)
+    set_sampling_flash(source, params[:pr_url])
 
     respond_to do |format|
       format.turbo_stream { head :ok } # recibe el broadcast
@@ -66,6 +25,18 @@ class SamplingsController < ApplicationController
     end
   end
 
+  def public_create
+    @round = Round.find_by!(hash_id: params[:hash_id])
+    @participant, source = sample_participant(normalized_public_name)
+
+    if @participant
+      send_notification_if_needed(source, params[:url])
+      render plain: @participant.name
+    else
+      render plain: "No hay participantes disponibles.", status: :unprocessable_entity
+    end
+  end
+
   private
 
   def set_round
@@ -74,6 +45,57 @@ class SamplingsController < ApplicationController
 
   def set_subgroup
     @subgroup = @round.subgroups.find(params[:subgroup_id])
+  end
+
+  def sample_participant(current_user_name)
+    if @subgroup
+      sampler = RoundRobinSamplerService.new(@subgroup, current_user_name)
+      [ sampler.sample, @subgroup.name.capitalize ]
+    else
+      sampler = GlobalRoundRobinSamplerService.new(@round, current_user_name)
+      [ sampler.sample, "Global" ]
+    end
+  end
+
+  def set_sampling_flash(source, pr_url)
+    if @participant
+      if send_notification_if_needed(source, pr_url)
+        flash[:notice] = "#{@participant.name} ha sido seleccionado y se ha enviado la notificación."
+      else
+        flash[:notice] = "#{@participant.name} ha sido seleccionado."
+      end
+    else
+      flash[:alert] = "No hay participantes disponibles."
+    end
+  end
+
+  def send_notification_if_needed(source, pr_url)
+    return false unless @participant && pr_url.present? && @round.web_hook.present?
+
+    message = generated_message.gsub("<user>", @participant.name + "!")
+    notifier = WebhookNotificationService.new(@round.web_hook)
+    notifier.send_notification(message, source, pr_url)
+  end
+
+  def generated_message
+    client = OpenAI::Client.new(access_token: ENV.fetch("OPENAPI_ACCESS_TOKEN"))
+
+    client.chat(
+      parameters: {
+        model: "gpt-4.1-nano",
+        messages: [
+          { role: "system", content: system_prompt },
+          { role: "user", content: "crea el mensaje" }
+        ],
+        temperature: 0.7
+      }
+    ).dig("choices", 0, "message", "content")
+  rescue
+    "#{@participant.name}! ha sido seleccionadx para revisar el PR: <url>"
+  end
+
+  def normalized_public_name
+    params[:me].to_s.tr("_", " ")
   end
 
 

@@ -1,7 +1,11 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
 one:
-  name: MyString
+  name: Alice Fixture
+  round: one
+  count: 0
+  available: true
 
 two:
-  name: MyString
+  name: Bob Fixture
+  round: two
+  count: 0
+  available: true

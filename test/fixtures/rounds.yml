@@ -1,9 +1,9 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
 one:
-  hash_id: MyString
-  name: MyString
+  hash_id: hashone
+  name: Round One
+  user: one
 
 two:
-  hash_id: MyString
-  name: MyString
+  hash_id: hashtwo
+  name: Round Two
+  user: two

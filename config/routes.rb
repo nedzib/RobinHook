@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   # Ruta pública para acceder a rounds por hash_id
   get "rounds/public", to: "round#public_show"
+  post "rounds/public", to: "samplings#public_create"
 
   resources :rounds, controller: "round" do
     resources :participants, only: [ :create, :destroy, :update, :edit ]
