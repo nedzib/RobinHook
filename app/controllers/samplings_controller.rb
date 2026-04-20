@@ -1,5 +1,6 @@
 class SamplingsController < ApplicationController
   skip_before_action :authenticate_user!, only: [ :create, :public_create ]
+  skip_forgery_protection only: [ :public_create ]
   before_action :set_round, only: [ :create ]
   before_action :set_subgroup, only: [ :create ], if: -> { params[:subgroup_id].present? }
 
