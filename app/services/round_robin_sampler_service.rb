@@ -17,10 +17,10 @@ class RoundRobinSamplerService
 
     # Filtrar el usuario actual si se proporcionó
     if @current_user_name.present?
-      candidates = candidates.where.not(name: @current_user_name)
+      candidates = exclude_current_user(candidates)
       # Si no quedan candidatos después del filtrado, seleccionar entre todos los disponibles
       if candidates.empty?
-        candidates = participants.where.not(name: @current_user_name)
+        candidates = exclude_current_user(participants)
         # Si aún no hay candidatos disponibles, usamos todos
         candidates = participants if candidates.empty?
       end
@@ -33,5 +33,11 @@ class RoundRobinSamplerService
     selected.update!(count: selected.count + 1) if selected
 
     selected
+  end
+
+  private
+
+  def exclude_current_user(scope)
+    scope.where("LOWER(name) <> ?", @current_user_name.downcase)
   end
 end

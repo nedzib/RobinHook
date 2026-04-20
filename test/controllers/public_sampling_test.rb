@@ -38,4 +38,15 @@ class PublicSamplingTest < ActionDispatch::IntegrationTest
     assert_equal 2, @bob.reload.count
     assert_equal 0, @alice.reload.count
   end
+
+  test "POST /rounds/public excludes me case-insensitively" do
+    @alice.update!(name: "Ned")
+
+    post rounds_public_path, params: { hash_id: @round.hash_id, me: "ned", url: "https://github.com/acme/repo/pull/123" }
+
+    assert_response :success
+    assert_equal "Bob", response.body
+    assert_equal 2, @bob.reload.count
+    assert_equal 0, @alice.reload.count
+  end
 end
