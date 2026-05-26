@@ -31,7 +31,7 @@ class SamplingsController < ApplicationController
     @participant, source = sample_participant(normalized_public_name)
 
     if @participant
-      send_notification_if_needed(source, params[:url])
+      send_notification_if_needed(source, params[:url], params[:priority])
       render plain: @participant.name
     else
       render plain: "No hay participantes disponibles.", status: :unprocessable_entity
@@ -70,10 +70,11 @@ class SamplingsController < ApplicationController
     end
   end
 
-  def send_notification_if_needed(_source, pr_url)
+  def send_notification_if_needed(_source, pr_url, priority = nil)
     return false unless @participant && pr_url.present? && @round.web_hook.present?
 
-    priority = params[:priority].to_i.clamp(1, 5)
+    priority = priority.to_i.clamp(1, 5) if priority.present?
+    priority = params[:priority].to_i.clamp(1, 5) if priority.blank?
     notifier = WebhookNotificationService.new(@round.web_hook)
     notifier.send_notification(generated_message, pr_url, @participant.google_user_id, @participant.name, priority)
   end
