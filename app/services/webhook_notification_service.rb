@@ -7,14 +7,22 @@ class WebhookNotificationService
     @webhook_url = webhook_url
   end
 
-  def send_notification(message, url, google_user_id = nil)
+  def send_notification(message, url, google_user_id = nil, participant_name = nil)
     return false if @webhook_url.blank?
 
     begin
       uri = URI.parse(@webhook_url)
       header = { "Content-Type": "application/json" }
 
-      message = message.gsub("<user>", "<users/#{google_user_id}>") if google_user_id.present?
+      user_mention = if google_user_id.present?
+                       "<users/#{google_user_id}>"
+                     elsif participant_name.present?
+                       participant_name
+                     else
+                       "<user>"
+                     end
+
+      message = message.gsub("<user>", user_mention)
       message = message.gsub("<url_pr>", "<#{url}|Pull Request>")
 
       body = { "text": message }

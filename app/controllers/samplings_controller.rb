@@ -74,7 +74,7 @@ class SamplingsController < ApplicationController
     return false unless @participant && pr_url.present? && @round.web_hook.present?
 
     notifier = WebhookNotificationService.new(@round.web_hook)
-    notifier.send_notification(generated_message, pr_url, @participant.google_user_id)
+    notifier.send_notification(generated_message, pr_url, @participant.google_user_id, @participant.name)
   end
 
   def generated_message
