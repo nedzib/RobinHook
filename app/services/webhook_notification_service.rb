@@ -7,46 +7,17 @@ class WebhookNotificationService
     @webhook_url = webhook_url
   end
 
-  def send_notification(message, group, url)
+  def send_notification(message, url, google_user_id = nil)
     return false if @webhook_url.blank?
 
     begin
       uri = URI.parse(@webhook_url)
       header = { "Content-Type": "application/json" }
 
-      body = {
-        "cardsV2": [
-          {
-            "cardId": "text-with-button",
-            "card": {
-              "sections": [
-                {
-                  "header": group,
-                  "widgets": [
-                    { "textParagraph": { "text": message } }
-                  ]
-                },
-                {
-                  "widgets": [
-                    {
-                      "buttonList": {
-                        "buttons": [
-                          {
-                            "text": "Ir al PR",
-                            "onClick": {
-                              "openLink": { "url": url }
-                            }
-                          }
-                        ]
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          }
-        ]
-      }
+      message = message.gsub("<user>", "<users/#{google_user_id}>") if google_user_id.present?
+      message = message.gsub("<url_pr>", "<#{url}|Pull Request>")
+
+      body = { "text": message }
 
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = (uri.scheme == "https")

@@ -70,12 +70,11 @@ class SamplingsController < ApplicationController
     end
   end
 
-  def send_notification_if_needed(source, pr_url)
+  def send_notification_if_needed(_source, pr_url)
     return false unless @participant && pr_url.present? && @round.web_hook.present?
 
-    message = generated_message.gsub("<user>", @participant.name + "!")
     notifier = WebhookNotificationService.new(@round.web_hook)
-    notifier.send_notification(message, source, pr_url)
+    notifier.send_notification(generated_message, pr_url, @participant.google_user_id)
   end
 
   def generated_message
@@ -92,7 +91,7 @@ class SamplingsController < ApplicationController
       }
     ).dig("choices", 0, "message", "content")
   rescue
-    "#{@participant.name}! ha sido seleccionadx para revisar el PR: <url>"
+    "<user> ha sido seleccionadx para revisar el PR: <url_pr>"
   end
 
   def normalized_public_name
@@ -112,7 +111,8 @@ class SamplingsController < ApplicationController
     "Genera una frase corta, ingeniosa y graciosa para notificar que una persona ha sido asignada a revisar un Pull Request.
     Reglas:
     - Escribe siempre en español.
-    - Incluye exactamente una vez el texto <user> (luego se reemplazará por el nombre del asignado).
+    - Incluye exactamente una vez el texto <user> (luego se reemplazará por la mención del asignado).
+    - Incluye exactamente una vez el texto <url_pr> (luego se reemplazará por el enlace al PR por lo que deberias indicarlo como objeto, este, la, el, le, etc).
     - No menciones familiares ni relaciones personales.
     - Debe caber en una sola línea.
     - No empieces con 'Este PR' ni con frases genéricas como 'Prepárate'.
