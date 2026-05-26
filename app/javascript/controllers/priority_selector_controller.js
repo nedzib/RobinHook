@@ -4,7 +4,7 @@ export default class extends Controller {
   static targets = ["input", "fire"]
 
   connect() {
-    this.updateVisuals(this.inputTarget.value || 1)
+    this.updateVisuals(this.inputTarget.value || 2)
   }
 
   select(event) {

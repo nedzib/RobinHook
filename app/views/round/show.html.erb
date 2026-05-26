@@ -325,7 +325,7 @@
                             "Prioridad",
                             class: "block text-sm font-medium text-gray-700 text-left mb-2" %>
                     <div data-controller="priority-selector" class="flex items-center justify-center space-x-3">
-                      <%= hidden_field_tag :priority, 1, data: { priority_selector_target: "input" } %>
+                      <%= hidden_field_tag :priority, 2, data: { priority_selector_target: "input" } %>
                       <% [
                         [1, "nf nf-fa-check_circle",    "text-green-500"],
                         [2, "nf nf-fa-info_circle",     "text-blue-500"],
@@ -337,7 +337,7 @@
                               data-value="<%= level %>"
                               data-color="<%= color %>"
                               data-priority-selector-target="fire"
-                              class="cursor-pointer text-2xl transition-colors duration-150 <%= level == 1 ? color : 'text-gray-300' %>">
+                              class="cursor-pointer text-2xl transition-colors duration-150 <%= level == 2 ? color : 'text-gray-300' %>">
                           <i class="<%= icon %>"></i>
                         </span>
                       <% end %>
@@ -406,7 +406,7 @@
                           "Prioridad",
                           class: "block text-sm font-medium text-gray-700 text-left mb-2" %>
                   <div data-controller="priority-selector" class="flex items-center justify-center space-x-3">
-                    <%= hidden_field_tag :priority, 1, data: { priority_selector_target: "input" } %>
+                    <%= hidden_field_tag :priority, 2, data: { priority_selector_target: "input" } %>
                     <% [
                       [1, "nf nf-fa-check_circle",    "text-green-500"],
                       [2, "nf nf-fa-info_circle",     "text-blue-500"],
@@ -418,7 +418,7 @@
                             data-value="<%= level %>"
                             data-color="<%= color %>"
                             data-priority-selector-target="fire"
-                            class="cursor-pointer text-2xl transition-colors duration-150 <%= level == 1 ? color : 'text-gray-300' %>">
+                            class="cursor-pointer text-2xl transition-colors duration-150 <%= level == 2 ? color : 'text-gray-300' %>">
                         <i class="<%= icon %>"></i>
                       </span>
                     <% end %>

@@ -7,7 +7,7 @@ class WebhookNotificationService
     @webhook_url = webhook_url
   end
 
-  def send_notification(message, url, google_user_id = nil, participant_name = nil, priority = 1)
+  def send_notification(message, url, google_user_id = nil, participant_name = nil, priority = 2)
     return false if @webhook_url.blank?
 
     begin
@@ -32,7 +32,7 @@ class WebhookNotificationService
         4 => "🚨 Alta",
         5 => "🔥 Urgente"
       }
-      priority_label = priority_icons[priority.to_i] || priority_icons[1]
+      priority_label = priority_icons[priority.to_i] || priority_icons[2]
       message += "\nPrioridad: #{priority_label}"
 
       body = { "text": message }

@@ -55,14 +55,14 @@ export default class extends Controller {
     if (priorityContainer) {
       const input = priorityContainer.querySelector('input[data-priority-selector-target="input"]')
       if (input) {
-        input.value = 1
+        input.value = 2
       }
 
       const fires = priorityContainer.querySelectorAll('[data-priority-selector-target="fire"]')
       fires.forEach(el => {
         const value = parseInt(el.dataset.value)
         const colorClass = el.dataset.color
-        if (value === 1) {
+        if (value <= 2) {
           el.classList.add(colorClass)
           el.classList.remove('text-gray-300')
         } else {

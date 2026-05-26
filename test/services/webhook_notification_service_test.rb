@@ -25,7 +25,7 @@ class WebhookNotificationServiceTest < ActiveSupport::TestCase
       assert result
       assert_equal "application/json", request["Content-Type"]
       payload = JSON.parse(request.body)
-      assert_equal "hola <https://example.com/pr|Pull Request>\nPrioridad: ✅ Baja", payload["text"]
+      assert_equal "hola <https://example.com/pr|Pull Request>\nPrioridad: ℹ️ Normal", payload["text"]
       assert_nil payload["cardsV2"]
     ensure
       Net::HTTP.define_singleton_method(:new, original_new)
@@ -50,7 +50,7 @@ class WebhookNotificationServiceTest < ActiveSupport::TestCase
 
       assert result
       payload = JSON.parse(request.body)
-      expected_text = "<users/123456789> ¡tienes un PR! Revisa <https://example.com/pr|Pull Request>\nPrioridad: ✅ Baja"
+      expected_text = "<users/123456789> ¡tienes un PR! Revisa <https://example.com/pr|Pull Request>\nPrioridad: ℹ️ Normal"
       assert_equal expected_text, payload["text"]
       assert_nil payload["cardsV2"]
     ensure
@@ -76,7 +76,7 @@ class WebhookNotificationServiceTest < ActiveSupport::TestCase
 
       assert result
       payload = JSON.parse(request.body)
-      expected_text = "Juan ¡tienes un PR! Revisa <https://example.com/pr|Pull Request>\nPrioridad: ✅ Baja"
+      expected_text = "Juan ¡tienes un PR! Revisa <https://example.com/pr|Pull Request>\nPrioridad: ℹ️ Normal"
       assert_equal expected_text, payload["text"]
     ensure
       Net::HTTP.define_singleton_method(:new, original_new)
