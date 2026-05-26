@@ -49,8 +49,8 @@ class SamplingsControllerTest < ActionDispatch::IntegrationTest
     end
     notifier_calls = []
     fake_notifier = Object.new
-    fake_notifier.define_singleton_method(:send_notification) do |message, url, google_user_id, participant_name|
-      notifier_calls << [ message, url, google_user_id, participant_name ]
+    fake_notifier.define_singleton_method(:send_notification) do |message, url, google_user_id, participant_name, priority|
+      notifier_calls << [ message, url, google_user_id, participant_name, priority ]
       true
     end
     previous_token = ENV["OPENAPI_ACCESS_TOKEN"]
@@ -71,6 +71,6 @@ class SamplingsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to round_path(@round)
     assert_equal "Bob ha sido seleccionado y se ha enviado la notificación.", flash[:notice]
     assert_equal "gpt-4.1-nano", chat_parameters[:model]
-    assert_equal [ [ "<user> revisa este PR <url_pr>", "https://example.com/pr/1", nil, "Bob" ] ], notifier_calls
+    assert_equal [ [ "<user> revisa este PR <url_pr>", "https://example.com/pr/1", nil, "Bob", 1 ] ], notifier_calls
   end
 end

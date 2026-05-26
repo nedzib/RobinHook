@@ -25,7 +25,7 @@ class WebhookNotificationServiceTest < ActiveSupport::TestCase
       assert result
       assert_equal "application/json", request["Content-Type"]
       payload = JSON.parse(request.body)
-      assert_equal "hola <https://example.com/pr|Pull Request>", payload["text"]
+      assert_equal "hola <https://example.com/pr|Pull Request>\nPrioridad: ✅ Baja", payload["text"]
       assert_nil payload["cardsV2"]
     ensure
       Net::HTTP.define_singleton_method(:new, original_new)
@@ -50,7 +50,7 @@ class WebhookNotificationServiceTest < ActiveSupport::TestCase
 
       assert result
       payload = JSON.parse(request.body)
-      expected_text = "<users/123456789> ¡tienes un PR! Revisa <https://example.com/pr|Pull Request>"
+      expected_text = "<users/123456789> ¡tienes un PR! Revisa <https://example.com/pr|Pull Request>\nPrioridad: ✅ Baja"
       assert_equal expected_text, payload["text"]
       assert_nil payload["cardsV2"]
     ensure
@@ -76,7 +76,32 @@ class WebhookNotificationServiceTest < ActiveSupport::TestCase
 
       assert result
       payload = JSON.parse(request.body)
-      expected_text = "Juan ¡tienes un PR! Revisa <https://example.com/pr|Pull Request>"
+      expected_text = "Juan ¡tienes un PR! Revisa <https://example.com/pr|Pull Request>\nPrioridad: ✅ Baja"
+      assert_equal expected_text, payload["text"]
+    ensure
+      Net::HTTP.define_singleton_method(:new, original_new)
+    end
+  end
+
+  test "shows more fire emojis for higher priority" do
+    request = nil
+    fake_http = Object.new
+    fake_http.define_singleton_method(:use_ssl=) { |_value| }
+    fake_http.define_singleton_method(:request) do |req|
+      request = req
+      Response.new("200", "ok")
+    end
+
+    original_new = Net::HTTP.method(:new)
+    Net::HTTP.define_singleton_method(:new) { |_host, _port| fake_http }
+
+    begin
+      message = "<user> ¡urgente! Revisa <url_pr>"
+      result = WebhookNotificationService.new("https://example.com/hook").send_notification(message, "https://example.com/pr", nil, "Juan", 5)
+
+      assert result
+      payload = JSON.parse(request.body)
+      expected_text = "Juan ¡urgente! Revisa <https://example.com/pr|Pull Request>\nPrioridad: 🔥 Urgente"
       assert_equal expected_text, payload["text"]
     ensure
       Net::HTTP.define_singleton_method(:new, original_new)

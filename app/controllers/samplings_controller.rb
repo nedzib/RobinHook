@@ -73,8 +73,9 @@ class SamplingsController < ApplicationController
   def send_notification_if_needed(_source, pr_url)
     return false unless @participant && pr_url.present? && @round.web_hook.present?
 
+    priority = params[:priority].to_i.clamp(1, 5)
     notifier = WebhookNotificationService.new(@round.web_hook)
-    notifier.send_notification(generated_message, pr_url, @participant.google_user_id, @participant.name)
+    notifier.send_notification(generated_message, pr_url, @participant.google_user_id, @participant.name, priority)
   end
 
   def generated_message

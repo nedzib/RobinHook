@@ -320,6 +320,30 @@
                                 required: true %>
                   </div>
 
+                  <div class="mb-4">
+                    <%= f.label :priority,
+                            "Prioridad",
+                            class: "block text-sm font-medium text-gray-700 text-left mb-2" %>
+                    <div data-controller="priority-selector" class="flex items-center justify-center space-x-3">
+                      <%= hidden_field_tag :priority, 1, data: { priority_selector_target: "input" } %>
+                      <% [
+                        [1, "nf nf-fa-check_circle",    "text-green-500"],
+                        [2, "nf nf-fa-info_circle",     "text-blue-500"],
+                        [3, "nf nf-fa-exclamation_circle", "text-yellow-500"],
+                        [4, "nf nf-fa-exclamation_triangle", "text-orange-500"],
+                        [5, "nf nf-fa-fire",            "text-red-500"]
+                      ].each do |level, icon, color| %>
+                        <span data-action="click->priority-selector#select"
+                              data-value="<%= level %>"
+                              data-color="<%= color %>"
+                              data-priority-selector-target="fire"
+                              class="cursor-pointer text-2xl transition-colors duration-150 <%= level == 1 ? color : 'text-gray-300' %>">
+                          <i class="<%= icon %>"></i>
+                        </span>
+                      <% end %>
+                    </div>
+                  </div>
+
                   <div class="flex items-center justify-between mt-4">
                     <button
                       type="button"
@@ -375,6 +399,30 @@
                                 "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50",
                               placeholder: "https://github.com/usuario/repo/pull/123",
                               required: true %>
+                </div>
+
+                <div class="mb-4">
+                  <%= f.label :priority,
+                          "Prioridad",
+                          class: "block text-sm font-medium text-gray-700 text-left mb-2" %>
+                  <div data-controller="priority-selector" class="flex items-center justify-center space-x-3">
+                    <%= hidden_field_tag :priority, 1, data: { priority_selector_target: "input" } %>
+                    <% [
+                      [1, "nf nf-fa-check_circle",    "text-green-500"],
+                      [2, "nf nf-fa-info_circle",     "text-blue-500"],
+                      [3, "nf nf-fa-exclamation_circle", "text-yellow-500"],
+                      [4, "nf nf-fa-exclamation_triangle", "text-orange-500"],
+                      [5, "nf nf-fa-fire",            "text-red-500"]
+                    ].each do |level, icon, color| %>
+                      <span data-action="click->priority-selector#select"
+                            data-value="<%= level %>"
+                            data-color="<%= color %>"
+                            data-priority-selector-target="fire"
+                            class="cursor-pointer text-2xl transition-colors duration-150 <%= level == 1 ? color : 'text-gray-300' %>">
+                        <i class="<%= icon %>"></i>
+                      </span>
+                    <% end %>
+                  </div>
                 </div>
 
                 <div class="flex items-center justify-between mt-4">
