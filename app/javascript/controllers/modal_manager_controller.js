@@ -20,6 +20,7 @@ export default class extends Controller {
       if (modal) {
         modal.classList.remove('hidden')
         this.updateCurrentUserField(modal)
+        this.resetForm(modal)
       }
     }
   }
@@ -38,6 +39,43 @@ export default class extends Controller {
   closeOnBackdrop(event) {
     if (event.target.classList.contains('sampling-modal')) {
       event.target.classList.add('hidden')
+    }
+  }
+
+  // Resetea el formulario del modal al abrirlo
+  resetForm(modal) {
+    // Limpiar campo URL manualmente
+    const urlField = modal.querySelector('input[type="url"]')
+    if (urlField) {
+      urlField.value = ''
+    }
+
+    // Resetear visualmente el priority-selector
+    const priorityContainer = modal.querySelector('[data-controller="priority-selector"]')
+    if (priorityContainer) {
+      const input = priorityContainer.querySelector('input[data-priority-selector-target="input"]')
+      if (input) {
+        input.value = 1
+      }
+
+      const fires = priorityContainer.querySelectorAll('[data-priority-selector-target="fire"]')
+      fires.forEach(el => {
+        const value = parseInt(el.dataset.value)
+        const colorClass = el.dataset.color
+        if (value === 1) {
+          el.classList.add(colorClass)
+          el.classList.remove('text-gray-300')
+        } else {
+          el.classList.add('text-gray-300')
+          el.classList.remove(colorClass)
+        }
+      })
+    }
+
+    // También intentar reset general del formulario por si acaso
+    const form = modal.querySelector('form')
+    if (form) {
+      form.reset()
     }
   }
 
@@ -102,6 +140,7 @@ export default class extends Controller {
         if (modal) {
           modal.classList.remove('hidden')
           this.updateCurrentUserField(modal)
+          this.resetForm(modal)
 
           // Forzar focus en el primer input del modal para mejor UX
           setTimeout(() => {
