@@ -61,6 +61,10 @@
             </div>
           </div>
 
+          <%= link_to edit_round_participant_path(round, participant), class: "w-9 h-9 flex items-center justify-center bg-white border border-gray-200 rounded-md text-gray-600 hover:bg-gray-100" do %>
+            <i class="nf nf-fa-pencil"></i>
+          <% end %>
+
           <%= button_to round_participant_path(round, participant), method: :delete, data: { turbo_confirm: "¿Estás seguro de que deseas eliminar este participante?" }, class: "w-9 h-9 flex items-center justify-center bg-white border border-red-200 rounded-md text-red-600 hover:bg-red-50" do %>
             <i class="nf nf-fa-trash"></i>
           <% end %>
