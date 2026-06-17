@@ -23,7 +23,8 @@ class WebhookNotificationService
                      end
 
       message = message.gsub("<user>", user_mention)
-      message = message.gsub("<url_pr>", "<#{url}|Pull Request>")
+      pr_number = url.split("/").last
+      message = message.gsub("<url_pr>", "<#{url}|PR##{pr_number}>")
 
       priority_icons = {
         1 => "✅ Baja",
