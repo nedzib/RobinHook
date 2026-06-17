@@ -81,11 +81,8 @@ class SamplingsController < ApplicationController
                  2
                end
 
-    message = generated_message
-               .gsub("<user>", @participant.name + "!")
-
     notifier = WebhookNotificationService.new(@round.web_hook)
-    notifier.send_notification(message, pr_url, @participant.google_user_id, @participant.name, priority)
+    notifier.send_notification(generated_message, pr_url, @participant.google_user_id, @participant.name, priority)
   end
 
   def generated_message
