@@ -75,11 +75,11 @@ class SamplingsController < ApplicationController
 
     priority = if priority.present?
                  priority.to_i.clamp(1, 5)
-               elsif params[:priority].present?
+    elsif params[:priority].present?
                  params[:priority].to_i.clamp(1, 5)
-               else
+    else
                  2
-               end
+    end
 
     notifier = WebhookNotificationService.new(@round.web_hook)
     notifier.send_notification(generated_message, pr_url, @participant.google_user_id, @participant.name, priority)
@@ -126,6 +126,7 @@ class SamplingsController < ApplicationController
     - No empieces con 'Este PR' ni con frases genéricas como 'Prepárate'.
     - Incorpora uno o dos emojis relevantes.
     - Inspírate en la temática: #{tematicas.sample}.
-    - Mantén un tono humorístico, ágil y diferente en cada frase (sin repetición de estructuras)."
+    - Mantén un tono humorístico, ágil y diferente en cada frase (sin repetición de estructuras).
+    - Termina el chiste con un ending que sea ', viejo <palabra_random_relacionada>' por ejemplo si el chiste es sobre programación, el ending podría ser ', viejo bug', si es sobre cine, ', viejo director', si es sobre el espacio, ', viejo spacex', etc. Usa palabras relacionadas con la temática del chiste, pueden ser caracteristicas, marcas, personajes, adjetivos, etc. esperable ser creativo"
   end
 end
