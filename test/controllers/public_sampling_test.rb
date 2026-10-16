@@ -49,4 +49,13 @@ class PublicSamplingTest < ActionDispatch::IntegrationTest
     assert_equal 2, @bob.reload.count
     assert_equal 0, @alice.reload.count
   end
+
+  test "POST /rounds/public rejects a non-GitHub url" do
+    post rounds_public_path, params: { hash_id: @round.hash_id, me: "Alice", url: "https://example.com/pr/1" }
+
+    assert_response :unprocessable_entity
+    assert_equal "El enlace ingresado debe ser un enlace de GitHub.", response.body
+    assert_equal 1, @bob.reload.count
+    assert_equal 0, @alice.reload.count
+  end
 end

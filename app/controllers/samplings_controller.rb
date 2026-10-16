@@ -5,6 +5,11 @@ class SamplingsController < ApplicationController
   before_action :set_subgroup, only: [ :create ], if: -> { params[:subgroup_id].present? }
 
   def create
+    unless valid_pr_url?(params[:pr_url])
+      flash[:alert] = "El enlace ingresado debe ser un enlace de GitHub."
+      return redirect_after_sampling
+    end
+
     current_user_name = params[:current_user_name]
     @participant, source = sample_participant(current_user_name)
     set_sampling_flash(source, params[:pr_url])
@@ -12,15 +17,7 @@ class SamplingsController < ApplicationController
     respond_to do |format|
       format.turbo_stream { head :ok } # recibe el broadcast
       format.html do
-        # Determinar si la solicitud viene de la vista pública
-        is_public_view = params[:public_view] == "true"
-
-        # Redirigir a la vista pública o privada según corresponda
-        if is_public_view
-          redirect_to rounds_public_path(hash_id: @round.hash_id)
-        else
-          redirect_to round_path(@round)
-        end
+        redirect_after_sampling
       end
       format.js
     end
@@ -28,6 +25,11 @@ class SamplingsController < ApplicationController
 
   def public_create
     @round = Round.find_by!(hash_id: params[:hash_id])
+
+    unless valid_pr_url?(params[:url])
+      return render plain: "El enlace ingresado debe ser un enlace de GitHub.", status: :unprocessable_entity
+    end
+
     @participant, source = sample_participant(normalized_public_name)
 
     if @participant
@@ -46,6 +48,24 @@ class SamplingsController < ApplicationController
 
   def set_subgroup
     @subgroup = @round.subgroups.find(params[:subgroup_id])
+  end
+
+  def redirect_after_sampling
+    # Determinar si la solicitud viene de la vista pública
+    if params[:public_view] == "true"
+      redirect_to rounds_public_path(hash_id: @round.hash_id)
+    else
+      redirect_to round_path(@round)
+    end
+  end
+
+  def valid_pr_url?(url)
+    return true if url.blank?
+
+    uri = URI.parse(url.to_s)
+    uri.is_a?(URI::HTTP) && %w[github.com www.github.com].include?(uri.host&.downcase)
+  rescue URI::InvalidURIError
+    false
   end
 
   def sample_participant(current_user_name)

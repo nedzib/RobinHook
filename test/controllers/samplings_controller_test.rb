@@ -61,7 +61,7 @@ class SamplingsControllerTest < ActionDispatch::IntegrationTest
     WebhookNotificationService.define_singleton_method(:new) { |_webhook_url| fake_notifier }
 
     begin
-        post round_global_samplings_path(@round), params: { current_user_name: "Alice", pr_url: "https://example.com/pr/1" }
+        post round_global_samplings_path(@round), params: { current_user_name: "Alice", pr_url: "https://github.com/acme/repo/pull/1" }
     ensure
       ENV["OPENAPI_ACCESS_TOKEN"] = previous_token
       OpenAI::Client.define_singleton_method(:new, original_client_new)
@@ -71,6 +71,22 @@ class SamplingsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to round_path(@round)
     assert_equal "Bob ha sido seleccionado y se ha enviado la notificación.", flash[:notice]
     assert_equal "gpt-4.1-nano", chat_parameters[:model]
-    assert_equal [ [ "<user> revisa este PR <url_pr>", "https://example.com/pr/1", nil, "Bob", 2 ] ], notifier_calls
+    assert_equal [ [ "<user> revisa este PR <url_pr>", "https://github.com/acme/repo/pull/1", nil, "Bob", 2 ] ], notifier_calls
+  end
+
+  test "POST /rounds/:round_id/samplings rejects a non-GitHub PR url" do
+    post round_global_samplings_path(@round), params: { current_user_name: "Alice", pr_url: "https://example.com/pr/1" }
+
+    assert_redirected_to round_path(@round)
+    assert_equal "El enlace ingresado debe ser un enlace de GitHub.", flash[:alert]
+    assert_equal 0, @direct_participant.reload.count
+    assert_equal 0, @subgroup_participant.reload.count
+  end
+
+  test "POST /rounds/:round_id/samplings rejects a non-GitHub PR url in the public view" do
+    post round_global_samplings_path(@round), params: { current_user_name: "Alice", public_view: "true", pr_url: "https://gitlab.com/acme/repo/merge_requests/1" }
+
+    assert_redirected_to rounds_public_path(hash_id: @round.hash_id)
+    assert_equal "El enlace ingresado debe ser un enlace de GitHub.", flash[:alert]
   end
 end
